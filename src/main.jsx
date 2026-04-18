@@ -1,4 +1,4 @@
-```react
+react
 import React, { useState, useEffect } from 'react';
 import { 
   doc, setDoc, onSnapshot, updateDoc, arrayUnion, getDoc 
@@ -261,4 +261,4 @@ export default function App() {
   );
 }
 
-```
+
