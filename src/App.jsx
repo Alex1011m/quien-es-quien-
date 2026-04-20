@@ -23,86 +23,131 @@ const firebaseConfig = {
   measurementId: "G-6FZ9TK8V5G"
 };
 
-// Inicialización de servicios
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const appId = "quien-es-quien-8edf0"; 
+const appId = "quien-es-quien-v2"; 
 
-// --- BASE DE DATOS: 60 ENTIDADES ---
-const ALL_ENTITIES = [
-  // --- MARCAS (20) ---
-  { id: 1, name: "Coca-Cola", group: "marcas", category: "Bebida", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop" },
-  { id: 2, name: "McDonald's", group: "marcas", category: "Comida", img: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400&h=400&fit=crop" },
-  { id: 3, name: "Apple", group: "marcas", category: "Tech", img: "https://images.unsplash.com/photo-1611186871348-b1ec696e5237?w=400&h=400&fit=crop" },
-  { id: 4, name: "Nike", group: "marcas", category: "Ropa", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop" },
-  { id: 5, name: "Google", group: "marcas", category: "Tech", img: "https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=400&h=400&fit=crop" },
-  { id: 6, name: "Ferrari", group: "marcas", category: "Autos", img: "https://images.unsplash.com/photo-1592198084033-aade902d1aae?w=400&h=400&fit=crop" },
-  { id: 7, name: "Netflix", group: "marcas", category: "Streaming", img: "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400&h=400&fit=crop" },
-  { id: 8, name: "Amazon", group: "marcas", category: "Tech", img: "https://images.unsplash.com/photo-1523474253046-2cd2c78b681f?w=400&h=400&fit=crop" },
-  { id: 9, name: "Starbucks", group: "marcas", category: "Bebida", img: "https://images.unsplash.com/photo-1544333346-64666359942f?w=400&h=400&fit=crop" },
-  { id: 10, name: "Disney", group: "marcas", category: "Cine", img: "https://images.unsplash.com/photo-1602934445884-da0fa1c9d3b3?w=400&h=400&fit=crop" },
-  { id: 11, name: "Tesla", group: "marcas", category: "Autos", img: "https://images.unsplash.com/photo-1617788131756-11394821a364?w=400&h=400&fit=crop" },
-  { id: 12, name: "Spotify", group: "marcas", category: "Música", img: "https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=400&h=400&fit=crop" },
-  { id: 13, name: "Samsung", group: "marcas", category: "Tech", img: "https://images.unsplash.com/photo-1610945415295-d9baf0630d7f?w=400&h=400&fit=crop" },
-  { id: 14, name: "Instagram", group: "marcas", category: "Social", img: "https://images.unsplash.com/photo-1611223235982-1f1e732a2882?w=400&h=400&fit=crop" },
-  { id: 15, name: "TikTok", group: "marcas", category: "Social", img: "https://images.unsplash.com/photo-1596440225331-31365ea9ff88?w=400&h=400&fit=crop" },
-  { id: 16, name: "Lego", group: "marcas", category: "Juguetes", img: "https://images.unsplash.com/photo-1560169897-bb333ef3df40?w=400&h=400&fit=crop" },
-  { id: 17, name: "Adidas", group: "marcas", category: "Ropa", img: "https://images.unsplash.com/photo-1518002171953-a080ee817e1f?w=400&h=400&fit=crop" },
-  { id: 18, name: "Pepsi", group: "marcas", category: "Bebida", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&h=400&fit=crop" },
-  { id: 19, name: "Red Bull", group: "marcas", category: "Bebida", img: "https://images.unsplash.com/photo-1622543925917-763c34d1538c?w=400&h=400&fit=crop" },
-  { id: 20, name: "Microsoft", group: "marcas", category: "Tech", img: "https://images.unsplash.com/photo-1520333789090-1afc82db536a?w=400&h=400&fit=crop" },
+// --- GRAN BASE DE DATOS (Más de 100 entidades) ---
+const DATABASE = [
+  // --- MARCAS (35 aprox) ---
+  { id: "m1", name: "Coca-Cola", group: "marcas", img: "/assets/marcas/coca-cola.jpg" },
+  { id: "m2", name: "McDonald's", group: "marcas", img: "/assets/marcas/mcdonalds.jpg" },
+  { id: "m3", name: "Apple", group: "marcas", img: "/assets/marcas/apple.jpg" },
+  { id: "m4", name: "Nike", group: "marcas", img: "/assets/marcas/nike.jpg" },
+  { id: "m5", name: "Google", group: "marcas", img: "/assets/marcas/google.jpg" },
+  { id: "m6", name: "Ferrari", group: "marcas", img: "/assets/marcas/ferrari.jpg" },
+  { id: "m7", name: "Netflix", group: "marcas", img: "/assets/marcas/netflix.jpg" },
+  { id: "m8", name: "Amazon", group: "marcas", img: "/assets/marcas/amazon.jpg" },
+  { id: "m9", name: "Starbucks", group: "marcas", img: "/assets/marcas/starbucks.jpg" },
+  { id: "m10", name: "Disney", group: "marcas", img: "/assets/marcas/disney.jpg" },
+  { id: "m11", name: "Tesla", group: "marcas", img: "/assets/marcas/tesla.jpg" },
+  { id: "m12", name: "Spotify", group: "marcas", img: "/assets/marcas/spotify.jpg" },
+  { id: "m13", name: "Samsung", group: "marcas", img: "/assets/marcas/samsung.jpg" },
+  { id: "m14", name: "Lego", group: "marcas", img: "/assets/marcas/lego.jpg" },
+  { id: "m15", name: "Adidas", group: "marcas", img: "/assets/marcas/adidas.jpg" },
+  { id: "m16", name: "Burger King", group: "marcas", img: "/assets/marcas/burgerking.jpg" },
+  { id: "m17", name: "Nintendo", group: "marcas", img: "/assets/marcas/nintendo.jpg" },
+  { id: "m18", name: "Sony", group: "marcas", img: "/assets/marcas/sony.jpg" },
+  { id: "m19", name: "YouTube", group: "marcas", img: "/assets/marcas/youtube.jpg" },
+  { id: "m20", name: "Puma", group: "marcas", img: "/assets/marcas/puma.jpg" },
+  { id: "m21", name: "Rolex", group: "marcas", img: "/assets/marcas/rolex.jpg" },
+  { id: "m22", name: "Gucci", group: "marcas", img: "/assets/marcas/gucci.jpg" },
+  { id: "m23", name: "Ford", group: "marcas", img: "/assets/marcas/ford.jpg" },
+  { id: "m24", name: "X (Twitter)", group: "marcas", img: "/assets/marcas/x.jpg" },
+  { id: "m25", name: "WhatsApp", group: "marcas", img: "/assets/marcas/whatsapp.jpg" },
+  { id: "m26", name: "IKEA", group: "marcas", img: "/assets/marcas/ikea.jpg" },
+  { id: "m27", name: "Pepsi", group: "marcas", img: "/assets/marcas/pepsi.jpg" },
+  { id: "m28", name: "Red Bull", group: "marcas", img: "/assets/marcas/redbull.jpg" },
+  { id: "m29", name: "Visa", group: "marcas", img: "/assets/marcas/visa.jpg" },
+  { id: "m30", name: "MasterCard", group: "marcas", img: "/assets/marcas/mastercard.jpg" },
 
-  // --- FAMOSOS (20) ---
-  { id: 21, name: "Lionel Messi", group: "famosos", category: "Deportes", img: "https://images.unsplash.com/photo-1543351611-58f69d7c1781?w=400&h=400&fit=crop" },
-  { id: 22, name: "Cristiano Ronaldo", group: "famosos", category: "Deportes", img: "https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=400&h=400&fit=crop" },
-  { id: 23, name: "Taylor Swift", group: "famosos", category: "Música", img: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=400&h=400&fit=crop" },
-  { id: 24, name: "Shakira", group: "famosos", category: "Música", img: "https://images.unsplash.com/photo-1520155707862-5b32817388d6?w=400&h=400&fit=crop" },
-  { id: 25, name: "Elon Musk", group: "famosos", category: "Tech", img: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=400&h=400&fit=crop" },
-  { id: 26, name: "Brad Pitt", group: "famosos", category: "Cine", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" },
-  { id: 27, name: "Rihanna", group: "famosos", category: "Música", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
-  { id: 28, name: "Beyoncé", group: "famosos", category: "Música", img: "https://images.unsplash.com/photo-1570158268183-d296b2892211?w=400&h=400&fit=crop" },
-  { id: 29, name: "Robert Downey Jr.", group: "famosos", category: "Cine", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
-  { id: 30, name: "Tom Cruise", group: "famosos", category: "Cine", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop" },
-  { id: 31, name: "Zendaya", group: "famosos", category: "Cine", img: "https://images.unsplash.com/photo-1531746020798-e795c5399c47?w=400&h=400&fit=crop" },
-  { id: 32, name: "Bad Bunny", group: "famosos", category: "Música", img: "https://images.unsplash.com/photo-1531123897727-8f129e16fd3c?w=400&h=400&fit=crop" },
-  { id: 33, name: "Jennifer Aniston", group: "famosos", category: "Cine", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
-  { id: 34, name: "LeBron James", group: "famosos", category: "Deportes", img: "https://images.unsplash.com/photo-1505235687559-289547c1f01d?w=400&h=400&fit=crop" },
-  { id: 35, name: "Will Smith", group: "famosos", category: "Cine", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
-  { id: 36, name: "Michael Jordan", group: "famosos", category: "Deportes", img: "https://images.unsplash.com/photo-1519861531473-9200262188bf?w=400&h=400&fit=crop" },
-  { id: 37, name: "Leonardo DiCaprio", group: "famosos", category: "Cine", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" },
-  { id: 38, name: "Rosalía", group: "famosos", category: "Música", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=400&fit=crop" },
-  { id: 39, name: "Dwayne Johnson", group: "famosos", category: "Cine", img: "https://images.unsplash.com/photo-1520156555701-bc3077755b40?w=400&h=400&fit=crop" },
-  { id: 40, name: "Mark Zuckerberg", group: "famosos", category: "Tech", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop" },
+  // --- FAMOSOS (35 aprox) ---
+  { id: "f1", name: "Lionel Messi", group: "famosos", img: "/assets/famosos/messi.jpg" },
+  { id: "f2", name: "Cristiano Ronaldo", group: "famosos", img: "/assets/famosos/cr7.jpg" },
+  { id: "f3", name: "Taylor Swift", group: "famosos", img: "/assets/famosos/taylor.jpg" },
+  { id: "f4", name: "Shakira", group: "famosos", img: "/assets/famosos/shakira.jpg" },
+  { id: "f5", name: "Elon Musk", group: "famosos", img: "/assets/famosos/musk.jpg" },
+  { id: "f6", name: "Brad Pitt", group: "famosos", img: "/assets/famosos/pitt.jpg" },
+  { id: "f7", name: "Rihanna", group: "famosos", img: "/assets/famosos/rihanna.jpg" },
+  { id: "f8", name: "Beyoncé", group: "famosos", img: "/assets/famosos/beyonce.jpg" },
+  { id: "f9", name: "Robert Downey Jr.", group: "famosos", img: "/assets/famosos/rdj.jpg" },
+  { id: "f10", name: "Tom Cruise", group: "famosos", img: "/assets/famosos/cruise.jpg" },
+  { id: "f11", name: "Zendaya", group: "famosos", img: "/assets/famosos/zendaya.jpg" },
+  { id: "f12", name: "Bad Bunny", group: "famosos", img: "/assets/famosos/badbunny.jpg" },
+  { id: "f13", name: "LeBron James", group: "famosos", img: "/assets/famosos/lebron.jpg" },
+  { id: "f14", name: "Will Smith", group: "famosos", img: "/assets/famosos/smith.jpg" },
+  { id: "f15", name: "The Rock", group: "famosos", img: "/assets/famosos/rock.jpg" },
+  { id: "f16", name: "Billie Eilish", group: "famosos", img: "/assets/famosos/billie.jpg" },
+  { id: "f17", name: "Ariana Grande", group: "famosos", img: "/assets/famosos/ariana.jpg" },
+  { id: "f18", name: "Lady Gaga", group: "famosos", img: "/assets/famosos/gaga.jpg" },
+  { id: "f19", name: "Drake", group: "famosos", img: "/assets/famosos/drake.jpg" },
+  { id: "f20", name: "Justin Bieber", group: "famosos", img: "/assets/famosos/bieber.jpg" },
+  { id: "f21", name: "Emma Watson", group: "famosos", img: "/assets/famosos/emma.jpg" },
+  { id: "f22", name: "Margot Robbie", group: "famosos", img: "/assets/famosos/margot.jpg" },
+  { id: "f23", name: "Chris Hemsworth", group: "famosos", img: "/assets/famosos/chris.jpg" },
+  { id: "f24", name: "Rosalía", group: "famosos", img: "/assets/famosos/rosalia.jpg" },
+  { id: "f25", name: "Mark Zuckerberg", group: "famosos", img: "/assets/famosos/zuck.jpg" },
+  { id: "f26", name: "Michael Jordan", group: "famosos", img: "/assets/famosos/jordan.jpg" },
+  { id: "f27", name: "Leonardo DiCaprio", group: "famosos", img: "/assets/famosos/dicaprio.jpg" },
+  { id: "f28", name: "Selena Gomez", group: "famosos", img: "/assets/famosos/selena.jpg" },
 
-  // --- FICCIÓN / CARTOONS (20) ---
-  { id: 41, name: "Mordecai", group: "ficcion", category: "Un Show Más", img: "https://via.placeholder.com/400?text=Mordecai" },
-  { id: 42, name: "Rigby", group: "ficcion", category: "Un Show Más", img: "https://via.placeholder.com/400?text=Rigby" },
-  { id: 43, name: "Dipper Pines", group: "ficcion", category: "Gravity Falls", img: "https://via.placeholder.com/400?text=Dipper" },
-  { id: 44, name: "Mabel Pines", group: "ficcion", category: "Gravity Falls", img: "https://via.placeholder.com/400?text=Mabel" },
-  { id: 45, name: "Bill Cipher", group: "ficcion", category: "Gravity Falls", img: "https://via.placeholder.com/400?text=Bill+Cipher" },
-  { id: 46, name: "Finn el Humano", group: "ficcion", category: "Hora de Aventura", img: "https://via.placeholder.com/400?text=Finn" },
-  { id: 47, name: "Jake el Perro", group: "ficcion", category: "Hora de Aventura", img: "https://via.placeholder.com/400?text=Jake" },
-  { id: 48, name: "Marceline", group: "ficcion", category: "Hora de Aventura", img: "https://via.placeholder.com/400?text=Marceline" },
-  { id: 49, name: "Bombón", group: "ficcion", category: "Chicas Superpoderosas", img: "https://via.placeholder.com/400?text=Bombon" },
-  { id: 50, name: "Burbuja", group: "ficcion", category: "Chicas Superpoderosas", img: "https://via.placeholder.com/400?text=Burbuja" },
-  { id: 51, name: "Bellota", group: "ficcion", category: "Chicas Superpoderosas", img: "https://via.placeholder.com/400?text=Bellota" },
-  { id: 52, name: "Luz Noceda", group: "ficcion", category: "The Owl House", img: "https://via.placeholder.com/400?text=Luz+Noceda" },
-  { id: 53, name: "Eda Clawthorne", group: "ficcion", category: "The Owl House", img: "https://via.placeholder.com/400?text=Eda" },
-  { id: 54, name: "King", group: "ficcion", category: "The Owl House", img: "https://via.placeholder.com/400?text=King" },
-  { id: 55, name: "Anne Boonchuy", group: "ficcion", category: "Amphibia", img: "https://via.placeholder.com/400?text=Anne" },
-  { id: 56, name: "Marcy Wu", group: "ficcion", category: "Amphibia", img: "https://via.placeholder.com/400?text=Marcy" },
-  { id: 57, name: "Sasha Waybright", group: "ficcion", category: "Amphibia", img: "https://via.placeholder.com/400?text=Sasha" },
-  { id: 58, name: "Gumball Watterson", group: "ficcion", category: "Gumball", img: "https://via.placeholder.com/400?text=Gumball" },
-  { id: 59, name: "Steven Universe", group: "ficcion", category: "Steven Universe", img: "https://via.placeholder.com/400?text=Steven" },
-  { id: 60, name: "Ben 10", group: "ficcion", category: "Ben 10", img: "https://via.placeholder.com/400?text=Ben+10" },
+  // --- FICCIÓN / CARTOONS (45 aprox) ---
+  // Un Show Más
+  { id: "c1", name: "Mordecai", group: "ficcion", img: "/assets/ficcion/mordecai.jpg" },
+  { id: "c2", name: "Rigby", group: "ficcion", img: "/assets/ficcion/rigby.jpg" },
+  { id: "c3", name: "Benson", group: "ficcion", img: "/assets/ficcion/benson.jpg" },
+  { id: "c4", name: "Skips", group: "ficcion", img: "/assets/ficcion/skips.jpg" },
+  // Gravity Falls
+  { id: "c5", name: "Dipper Pines", group: "ficcion", img: "/assets/ficcion/dipper.jpg" },
+  { id: "c6", name: "Mabel Pines", group: "ficcion", img: "/assets/ficcion/mabel.jpg" },
+  { id: "c7", name: "Stan Pines", group: "ficcion", img: "/assets/ficcion/stan.jpg" },
+  { id: "c8", name: "Bill Cipher", group: "ficcion", img: "/assets/ficcion/bill.jpg" },
+  // Hora de Aventura
+  { id: "c9", name: "Finn", group: "ficcion", img: "/assets/ficcion/finn.jpg" },
+  { id: "c10", name: "Jake", group: "ficcion", img: "/assets/ficcion/jake.jpg" },
+  { id: "c11", name: "Marceline", group: "ficcion", img: "/assets/ficcion/marceline.jpg" },
+  { id: "c12", name: "Dulce Princesa", group: "ficcion", img: "/assets/ficcion/princesa.jpg" },
+  { id: "c13", name: "Rey Helado", group: "ficcion", img: "/assets/ficcion/reyhelado.jpg" },
+  // Chicas Superpoderosas
+  { id: "c14", name: "Bombón", group: "ficcion", img: "/assets/ficcion/bombon.jpg" },
+  { id: "c15", name: "Burbuja", group: "ficcion", img: "/assets/ficcion/burbuja.jpg" },
+  { id: "c16", name: "Bellota", group: "ficcion", img: "/assets/ficcion/bellota.jpg" },
+  { id: "c17", name: "Mojo Jojo", group: "ficcion", img: "/assets/ficcion/mojojojo.jpg" },
+  // Amphibia
+  { id: "c18", name: "Anne Boonchuy", group: "ficcion", img: "/assets/ficcion/anne.jpg" },
+  { id: "c19", name: "Sasha Waybright", group: "ficcion", img: "/assets/ficcion/sasha.jpg" },
+  { id: "c20", name: "Marcy Wu", group: "ficcion", img: "/assets/ficcion/marcy.jpg" },
+  { id: "c21", name: "Hop Pop", group: "ficcion", img: "/assets/ficcion/hoppop.jpg" },
+  // La Casa Búho
+  { id: "c22", name: "Luz Noceda", group: "ficcion", img: "/assets/ficcion/luz.jpg" },
+  { id: "c23", name: "Eda Clawthorne", group: "ficcion", img: "/assets/ficcion/eda.jpg" },
+  { id: "c24", name: "King", group: "ficcion", img: "/assets/ficcion/king.jpg" },
+  { id: "c25", name: "Amity Blight", group: "ficcion", img: "/assets/ficcion/amity.jpg" },
+  // Harry Potter
+  { id: "c26", name: "Harry Potter", group: "ficcion", img: "/assets/ficcion/harry.jpg" },
+  { id: "c27", name: "Hermione Granger", group: "ficcion", img: "/assets/ficcion/hermione.jpg" },
+  { id: "c28", name: "Ron Weasley", group: "ficcion", img: "/assets/ficcion/ron.jpg" },
+  { id: "c29", name: "Lord Voldemort", group: "ficcion", img: "/assets/ficcion/voldemort.jpg" },
+  { id: "c30", name: "Albus Dumbledore", group: "ficcion", img: "/assets/ficcion/dumbledore.jpg" },
+  { id: "c31", name: "Severus Snape", group: "ficcion", img: "/assets/ficcion/snape.jpg" },
+  { id: "c32", name: "Draco Malfoy", group: "ficcion", img: "/assets/ficcion/draco.jpg" },
+  // Extras
+  { id: "c33", name: "Gumball", group: "ficcion", img: "/assets/ficcion/gumball.jpg" },
+  { id: "c34", name: "Darwin", group: "ficcion", img: "/assets/ficcion/darwin.jpg" },
+  { id: "c35", name: "Steven Universe", group: "ficcion", img: "/assets/ficcion/steven.jpg" },
+  { id: "c36", name: "Ben 10", group: "ficcion", img: "/assets/ficcion/ben10.jpg" },
+  { id: "c37", name: "Homer Simpson", group: "ficcion", img: "/assets/ficcion/homer.jpg" },
+  { id: "c38", name: "Spider-Man", group: "ficcion", img: "/assets/ficcion/spiderman.jpg" },
+  { id: "c39", name: "Batman", group: "ficcion", img: "/assets/ficcion/batman.jpg" },
+  { id: "c40", name: "Iron Man", group: "ficcion", img: "/assets/ficcion/ironman.jpg" },
 ];
 
 const CATEGORIES = [
-  { id: 'variado', name: 'Variado', icon: <Layers size={24} /> },
-  { id: 'marcas', name: 'Marcas', icon: <Building2 size={24} /> },
-  { id: 'famosos', name: 'Famosos', icon: <Star size={24} /> },
-  { id: 'ficcion', name: 'Ficción/Cartoons', icon: <Users size={24} /> },
+  { id: 'variado', name: 'Variado', icon: <Layers size={24} />, desc: 'Todo mezclado.' },
+  { id: 'marcas', name: 'Marcas', icon: <Building2 size={24} />, desc: 'Logos del mundo.' },
+  { id: 'famosos', name: 'Famosos', icon: <Star size={24} />, desc: 'Personas reales.' },
+  { id: 'ficcion', name: 'Ficción/Cartoons', icon: <Users size={24} />, desc: 'Series y pelis.' },
 ];
 
 export default function App() {
@@ -111,16 +156,22 @@ export default function App() {
   const [gameState, setGameState] = useState('menu');
   const [roomCode, setRoomCode] = useState("");
   const [currentGame, setCurrentGame] = useState(null);
-  const [selectedGroup, setSelectedGroup] = useState('variado');
-  const [mySecretEntity, setMySecretEntity] = useState(null);
   const [flippedIds, setFlippedIds] = useState([]);
   const [chatHistory, setChatHistory] = useState([]);
   const [gameResult, setGameResult] = useState(null);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [statusMsg, setStatusMsg] = useState("");
   const [copied, setCopied] = useState(false);
 
+  // Auth inicial
   useEffect(() => {
-    signInAnonymously(auth).catch(console.error);
+    const initAuth = async () => {
+      try {
+        await signInAnonymously(auth);
+      } catch (err) {
+        console.error("Auth error:", err);
+      }
+    };
+    initAuth();
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
       setIsAuthLoading(false);
@@ -128,80 +179,103 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  // Sincronización Online
   useEffect(() => {
     if (!user || !roomCode || gameState === 'menu') return;
-    const roomRef = doc(db, 'rooms', roomCode);
+
+    const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
     const unsubscribe = onSnapshot(roomRef, (snap) => {
       if (snap.exists()) {
         const data = snap.data();
         setCurrentGame(data);
         if (data.player2 && gameState === 'lobby') setGameState('picking');
-        if (data.p1_secret && data.p2_secret && gameState === 'picking') {
-          setGameState('playing');
-          const secretId = user.uid === data.player1 ? data.p1_secret : data.p2_secret;
-          setMySecretEntity(ALL_ENTITIES.find(e => e.id === secretId));
-        }
+        if (data.p1_secret && data.p2_secret && gameState === 'picking') setGameState('playing');
         if (data.winner) setGameResult(data.winner === user.uid ? 'won' : 'lost');
       }
-    });
+    }, (err) => console.error("Firestore error:", err));
+
     return () => unsubscribe();
   }, [user, roomCode, gameState]);
 
-  const filteredEntities = useMemo(() => {
-    return selectedGroup === 'variado' ? ALL_ENTITIES : ALL_ENTITIES.filter(e => e.group === selectedGroup);
-  }, [selectedGroup]);
+  // Función para barajar y elegir 20
+  const getRandom20 = (category) => {
+    let pool = category === 'variado' ? DATABASE : DATABASE.filter(e => e.group === category);
+    return pool.sort(() => 0.5 - Math.random()).slice(0, 20);
+  };
+
+  const copyCode = () => {
+    navigator.clipboard.writeText(roomCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const createRoom = async (category) => {
+    if (!user) return;
     const code = Math.random().toString(36).substring(2, 7).toUpperCase();
-    const roomRef = doc(db, 'rooms', code);
+    const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', code);
+    
+    // Elegimos los 20 personajes para ESTA partida
+    const selectedList = getRandom20(category);
+
     await setDoc(roomRef, {
-      code, player1: user.uid, player2: null, category,
-      p1_secret: null, p2_secret: null, turn: user.uid,
-      lastQuestion: null, lastAnswer: null, createdAt: Date.now()
+      code,
+      player1: user.uid,
+      player2: null,
+      category,
+      entities: selectedList, // Guardamos la lista en la DB
+      p1_secret: null,
+      p2_secret: null,
+      turn: user.uid,
+      lastQuestion: null,
+      lastAnswer: null,
+      createdAt: Date.now()
     });
-    setSelectedGroup(category);
+    
     setRoomCode(code);
     setGameState('lobby');
   };
 
   const joinRoom = async (code) => {
-    if (!code) return;
+    if (!user || !code) return;
     const cleanCode = code.trim().toUpperCase();
-    const roomRef = doc(db, 'rooms', cleanCode);
+    const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', cleanCode);
     const snap = await getDoc(roomRef);
+
     if (snap.exists()) {
       const data = snap.data();
       if (!data.player2 || data.player2 === user.uid) {
         await updateDoc(roomRef, { player2: user.uid });
-        setSelectedGroup(data.category);
         setRoomCode(cleanCode);
         setGameState('picking');
       } else {
-        setErrorMsg("La sala ya está llena.");
+        setStatusMsg("La sala está llena.");
       }
     } else {
-      setErrorMsg("Sala no encontrada.");
+      setStatusMsg("No se encontró la sala.");
     }
   };
 
-  const handlePickSecret = async (id) => {
-    const roomRef = doc(db, 'rooms', roomCode);
+  const pickSecret = async (id) => {
+    if (!user || !roomCode) return;
+    const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
     const isP1 = user.uid === currentGame?.player1;
     await updateDoc(roomRef, { [isP1 ? 'p1_secret' : 'p2_secret']: id });
   };
 
   const sendQuestion = async (text) => {
-    if (!text.trim() || currentGame?.turn !== user.uid) return;
-    const roomRef = doc(db, 'rooms', roomCode);
+    if (!user || !roomCode || !text.trim() || currentGame?.turn !== user.uid) return;
+    const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
     await updateDoc(roomRef, {
-      lastQuestion: text, lastAnswer: null,
+      lastQuestion: text,
+      lastAnswer: null,
       turn: user.uid === currentGame.player1 ? currentGame.player2 : currentGame.player1
     });
     setChatHistory(prev => [{ q: text, a: "...", mine: true }, ...prev]);
   };
 
   const sendAnswer = async (ans) => {
-    const roomRef = doc(db, 'rooms', roomCode);
+    if (!roomCode) return;
+    const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
     await updateDoc(roomRef, { lastAnswer: ans });
     setChatHistory(prev => {
       const copy = [...prev];
@@ -211,11 +285,23 @@ export default function App() {
   };
 
   const resolveGame = async (id) => {
-    if (!id || !currentGame) return;
-    const roomRef = doc(db, 'rooms', roomCode);
+    if (!user || !roomCode || !id || !currentGame) return;
+    const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
     const enemySecret = user.uid === currentGame.player1 ? currentGame.p2_secret : currentGame.p1_secret;
-    await updateDoc(roomRef, { winner: id === enemySecret ? user.uid : (user.uid === currentGame.player1 ? currentGame.player2 : currentGame.player1) });
+    if (id === enemySecret) {
+      await updateDoc(roomRef, { winner: user.uid });
+    } else {
+      await updateDoc(roomRef, { winner: user.uid === currentGame.player1 ? currentGame.player2 : currentGame.player1 });
+    }
   };
+
+  const mySecret = useMemo(() => {
+    if (!currentGame || !user) return null;
+    const sid = user.uid === currentGame.player1 ? currentGame.p1_secret : currentGame.p2_secret;
+    return currentGame.entities.find(e => e.id === sid);
+  }, [currentGame, user]);
+
+  // --- UI RENDERS ---
 
   if (isAuthLoading) return (
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white font-bold uppercase text-xs tracking-widest">
@@ -226,20 +312,21 @@ export default function App() {
 
   if (gameState === 'menu') return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 font-sans">
-      <h1 className="text-6xl font-black italic tracking-tighter text-yellow-400 mb-12 uppercase">Pop Duel</h1>
+      <h1 className="text-7xl font-black italic tracking-tighter text-yellow-400 mb-2 uppercase">Pop Duel</h1>
+      <p className="text-slate-500 font-bold uppercase tracking-[0.3em] text-[10px] mb-12 italic">Online Edition</p>
       <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-slate-900 p-8 rounded-[2.5rem] border-2 border-slate-800 shadow-xl">
-          <h2 className="text-lg font-black mb-6 flex items-center gap-2 uppercase tracking-widest text-white"><Star className="text-yellow-400" size={20}/> Crear Sala</h2>
-          <div className="grid grid-cols-2 gap-3 text-white">
-            {CATEGORIES.map(c => <button key={c.id} onClick={() => createRoom(c.id)} className="bg-slate-800 hover:bg-yellow-400 hover:text-black p-4 rounded-2xl transition-all font-black text-[10px] uppercase border-2 border-transparent hover:border-white">{c.name}</button>)}
+        <div className="bg-slate-900 p-8 rounded-[3rem] border-2 border-slate-800 shadow-xl">
+          <h2 className="text-lg font-black mb-6 flex items-center gap-2 uppercase text-white"><Star className="text-yellow-400" /> Crear Sala</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {CATEGORIES.map(c => <button key={c.id} onClick={() => createRoom(c.id)} className="bg-slate-800 hover:bg-yellow-400 hover:text-black p-4 rounded-2xl transition-all font-black text-xs uppercase">{c.name}</button>)}
           </div>
         </div>
-        <div className="bg-slate-900 p-8 rounded-[2.5rem] border-2 border-slate-800 shadow-xl text-white">
-          <h2 className="text-lg font-black mb-6 flex items-center gap-2 uppercase tracking-widest"><LogIn className="text-yellow-400" size={20}/> Unirse</h2>
+        <div className="bg-slate-900 p-8 rounded-[3rem] border-2 border-slate-800 shadow-xl text-white">
+          <h2 className="text-lg font-black mb-6 flex items-center gap-2 uppercase"><LogIn className="text-yellow-400" /> Unirse</h2>
           <div className="space-y-4">
-            <input type="text" placeholder="CÓDIGO" className="w-full bg-slate-950 border-2 border-slate-700 p-4 rounded-2xl text-center font-black uppercase text-xl text-white outline-none focus:border-yellow-400" value={roomCode} onChange={e => setRoomCode(e.target.value.toUpperCase())} />
-            <button onClick={() => joinRoom(roomCode)} className="w-full bg-yellow-400 text-black py-4 rounded-2xl font-black uppercase shadow-xl active:scale-95 transition-all tracking-widest">Entrar</button>
-            {errorMsg && <p className="text-red-400 text-[10px] font-bold text-center uppercase tracking-widest">{errorMsg}</p>}
+            <input type="text" placeholder="CÓDIGO" className="w-full bg-slate-950 border-2 border-slate-700 p-5 rounded-3xl text-center font-black uppercase text-2xl text-yellow-400 outline-none focus:border-yellow-400" value={roomCode} onChange={e => setRoomCode(e.target.value.toUpperCase())} />
+            <button onClick={() => joinRoom(roomCode)} className="w-full bg-yellow-400 text-black py-4 rounded-2xl font-black uppercase shadow-xl hover:scale-105 transition-all">Entrar</button>
+            {statusMsg && <p className="text-red-400 text-xs font-bold text-center uppercase tracking-widest">{statusMsg}</p>}
           </div>
         </div>
       </div>
@@ -248,30 +335,32 @@ export default function App() {
 
   if (gameState === 'lobby') return (
     <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6 text-center">
-      <div className="bg-slate-900 p-12 rounded-[3.5rem] border-4 border-yellow-400 max-w-md w-full shadow-2xl">
+      <div className="bg-slate-900 p-12 rounded-[4rem] border-4 border-yellow-400 max-w-md w-full shadow-2xl">
         <Loader2 size={48} className="mx-auto text-yellow-400 mb-6 animate-spin" />
-        <h2 className="text-3xl font-black italic mb-8 uppercase tracking-tighter">Esperando Rival</h2>
-        <div className="bg-slate-950 p-6 rounded-3xl border-2 border-slate-800 flex items-center justify-between gap-4 mb-8 text-white">
+        <h2 className="text-3xl font-black italic mb-2 uppercase">Esperando Rival</h2>
+        <p className="text-slate-500 font-bold mb-8 uppercase text-xs tracking-widest">Comparte este código para jugar</p>
+        <div className="bg-slate-950 p-6 rounded-3xl border-2 border-slate-800 flex items-center justify-between gap-4 mb-8">
           <span className="text-5xl font-black text-yellow-400 tracking-widest">{roomCode}</span>
-          <button onClick={() => { navigator.clipboard.writeText(roomCode); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={copied ? "p-3 rounded-xl bg-green-500 text-white" : "p-3 rounded-xl bg-slate-800 text-slate-400"}>
-            {copied ? <CheckCircle2 size={20}/> : <Copy size={20}/>}
+          <button onClick={copyCode} className={copied ? "p-3 rounded-xl bg-green-500 text-white scale-110" : "p-3 rounded-xl bg-slate-800 text-slate-400 hover:text-white"}>
+            {copied ? <CheckCircle2 /> : <Copy />}
           </button>
         </div>
-        <button onClick={() => setGameState('menu')} className="text-slate-600 font-bold text-xs uppercase hover:text-white transition-colors">Abandonar</button>
+        <button onClick={() => setGameState('menu')} className="text-slate-600 font-bold text-xs uppercase hover:text-red-400 transition-colors">Cancelar</button>
       </div>
     </div>
   );
 
   if (gameState === 'picking') {
-    const pickedId = (user.uid === currentGame?.player1) ? currentGame?.p1_secret : currentGame?.p2_secret;
+    const isP1 = user.uid === currentGame?.player1;
+    const pickedId = isP1 ? currentGame?.p1_secret : currentGame?.p2_secret;
     return (
-      <div className="min-h-screen bg-slate-50 p-6 text-center flex flex-col items-center">
-        <h2 className="text-4xl font-black italic text-slate-900 uppercase mb-4 tracking-tighter">Elige tu Secreto</h2>
-        <p className="text-slate-400 text-xs font-bold uppercase mb-10 tracking-widest">Tu rival deberá adivinar este personaje</p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 max-w-6xl mx-auto">
-          {filteredEntities.map(item => (
-            <button key={item.id} disabled={!!pickedId} onClick={() => handlePickSecret(item.id)} className={pickedId === item.id ? "relative h-52 rounded-2xl border-4 border-yellow-400 scale-105 shadow-2xl overflow-hidden bg-white" : "relative h-52 rounded-2xl border-4 border-white opacity-60 hover:opacity-100 overflow-hidden transition-all bg-white"}>
-              <img src={item.img} className="w-full h-full object-cover" alt={item.name} />
+      <div className="min-h-screen bg-slate-100 p-6 text-center flex flex-col items-center">
+        <h2 className="text-4xl font-black italic text-slate-900 uppercase mb-4 tracking-tighter">Tu Secreto</h2>
+        <p className="text-slate-400 text-xs font-bold uppercase mb-10 tracking-widest">Personaje que el rival debe adivinar</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4 max-w-6xl mx-auto">
+          {currentGame?.entities.map(item => (
+            <button key={item.id} disabled={!!pickedId} onClick={() => pickSecret(item.id)} className={pickedId === item.id ? "relative h-52 rounded-2xl border-4 border-yellow-400 scale-105 shadow-2xl overflow-hidden bg-white" : "relative h-52 rounded-2xl border-4 border-white opacity-60 hover:opacity-100 overflow-hidden bg-white shadow-lg transition-all"}>
+              <img src={item.img} className="w-full h-full object-cover" alt="" />
               <div className="absolute inset-x-0 bottom-0 bg-black/60 p-2 text-[10px] font-black text-white uppercase">{item.name}</div>
             </button>
           ))}
@@ -285,6 +374,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col lg:flex-row font-sans overflow-hidden">
+      {/* Tablero */}
       <div className="flex-grow p-4 lg:p-10 h-screen overflow-y-auto custom-scrollbar">
         <div className="flex justify-between items-center mb-8 bg-white p-5 rounded-[2rem] shadow-sm border border-slate-200">
           <button onClick={() => window.location.reload()} className="text-slate-400 font-black text-[9px] uppercase flex items-center gap-1 hover:text-red-500 transition-colors"><ArrowLeft size={14}/> Salir</button>
@@ -294,8 +384,8 @@ export default function App() {
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
-          {filteredEntities.map(item => (
-            <div key={item.id} onClick={() => setFlippedIds(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id])} className={flippedIds.includes(item.id) ? "relative h-48 opacity-20 grayscale scale-95 blur-[2px] transition-all cursor-pointer" : "relative h-48 bg-white rounded-2xl shadow-md border-2 border-white transition-all overflow-hidden cursor-pointer hover:scale-105"}>
+          {currentGame?.entities.map(item => (
+            <div key={item.id} onClick={() => { if(!gameResult) setFlippedIds(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id])}} className={flippedIds.includes(item.id) ? "relative h-48 opacity-20 grayscale scale-95 blur-[2px] transition-all cursor-pointer" : "relative h-48 bg-white rounded-2xl shadow-md border-2 border-white transition-all overflow-hidden cursor-pointer hover:scale-105"}>
               <img src={item.img} className="w-full h-full object-cover" alt="" />
               <div className="absolute inset-x-0 bottom-0 bg-white/95 p-3 text-center text-[10px] font-black uppercase truncate tracking-tighter text-slate-800">{item.name}</div>
             </div>
@@ -303,18 +393,19 @@ export default function App() {
         </div>
       </div>
 
+      {/* Panel Control */}
       <div className="w-full lg:w-[22rem] bg-white border-l p-6 flex flex-col shadow-2xl h-screen">
         <div className="mb-6 bg-slate-900 p-5 rounded-[2.5rem] text-white flex items-center gap-4 border-b-8 border-yellow-400 shadow-xl">
-          <img src={mySecretEntity?.img} className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-sm" alt="" />
+          <img src={mySecret?.img} className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-sm" alt="" />
           <div>
             <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1">Tu Identidad</p>
-            <h3 className="text-xl font-black italic tracking-tighter uppercase text-white">{mySecretEntity?.name}</h3>
+            <h3 className="text-xl font-black italic tracking-tighter uppercase text-white">{mySecret?.name}</h3>
           </div>
         </div>
 
         {currentGame?.lastQuestion && !currentGame?.lastAnswer && !isMyTurn && (
           <div className="mb-6 bg-yellow-400 p-6 rounded-[2rem] text-black shadow-2xl animate-bounce border-2 border-yellow-500">
-            <p className="text-[10px] font-black uppercase mb-1 opacity-60 tracking-widest text-center">Te preguntan:</p>
+            <p className="text-[10px] font-black uppercase mb-1 opacity-60 tracking-widest text-center text-slate-900">Te preguntan:</p>
             <p className="text-lg font-black italic mb-5 leading-tight text-center">"{currentGame.lastQuestion}"</p>
             <div className="flex gap-2">
               <button onClick={() => sendAnswer("SÍ")} className="flex-grow bg-black text-white py-3 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-all shadow-md">SÍ</button>
@@ -327,7 +418,7 @@ export default function App() {
           {chatHistory.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full opacity-10">
                <HelpCircle size={48} className="mb-4" />
-               <p className="text-xs font-black uppercase tracking-widest text-center">Hazle una pregunta a tu oponente</p>
+               <p className="text-xs font-black uppercase tracking-widest text-center text-slate-900">Inicia el Duelo</p>
             </div>
           )}
           {chatHistory.map((h, i) => (
@@ -339,12 +430,12 @@ export default function App() {
         </div>
 
         <div className="space-y-4 pt-4 border-t border-slate-100">
-          <input disabled={!isMyTurn} type="text" placeholder={isMyTurn ? "Escribe tu pregunta..." : "Espera tu turno..."} className="w-full bg-slate-100 p-5 rounded-[2rem] text-xs font-bold outline-none border-2 border-transparent focus:border-indigo-500 disabled:opacity-50 transition-all shadow-inner text-slate-900" onKeyPress={e => { if(e.key === 'Enter' && e.target.value.trim()){ sendQuestion(e.target.value); e.target.value = ""; }}} />
+          <input disabled={!isMyTurn || gameResult} type="text" placeholder={isMyTurn ? "Tu pregunta..." : "Espera..."} className="w-full bg-slate-100 p-5 rounded-[2rem] text-xs font-bold outline-none border-2 border-transparent focus:border-indigo-500 disabled:opacity-50 transition-all shadow-inner text-slate-900" onKeyPress={e => { if(e.key === 'Enter' && e.target.value.trim()){ sendQuestion(e.target.value); e.target.value = ""; }}} />
           <div className="bg-slate-900 p-4 rounded-[2.5rem] border-b-8 border-yellow-400 shadow-xl">
             <p className="text-[9px] font-black uppercase text-slate-500 mb-2 text-center tracking-[0.2em]">Adivina el Personaje</p>
-            <select disabled={!isMyTurn} onChange={e => { if(e.target.value) resolveGame(parseInt(e.target.value)); }} className="w-full bg-slate-900 text-white p-3 rounded-xl text-[10px] font-black uppercase outline-none cursor-pointer focus:text-yellow-400 transition-colors">
+            <select disabled={!isMyTurn || gameResult} onChange={e => { if(e.target.value) resolveGame(e.target.value); }} className="w-full bg-slate-900 text-white p-3 rounded-xl text-[10px] font-black uppercase outline-none cursor-pointer focus:text-yellow-400 transition-colors">
               <option value="">¿QUIÉN ES?</option>
-              {filteredEntities.map(e => <option key={e.id} value={e.id} className="text-white">{e.name}</option>)}
+              {currentGame?.entities.map(e => <option key={e.id} value={e.id} className="text-white bg-slate-900">{e.name}</option>)}
             </select>
           </div>
         </div>
@@ -372,3 +463,5 @@ export default function App() {
     </div>
   );
 }
+
+
