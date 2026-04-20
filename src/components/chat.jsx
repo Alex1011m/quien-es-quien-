@@ -116,4 +116,4 @@ const Chat = ({ logs, onSend, isTurn, isLoading }) => {
 
 export default Chat;
 
-```
+
