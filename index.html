@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pop Duel | Multiverse Online</title>
+    <title>Pop Duel | Multiverse 60+</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -12,12 +12,20 @@
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #020617; color: white; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 20px; }
-        .flipped { opacity: 0.05; filter: grayscale(1) blur(8px); transform: scale(0.9); pointer-events: none; }
+        .flipped { opacity: 0.1; filter: grayscale(1) blur(4px); transform: scale(0.9); pointer-events: none; }
         .pulse-indigo { animation: pulse-indigo 2s infinite; }
         @keyframes pulse-indigo { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
         .screen { display: none; min-height: 100vh; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; }
         .screen.active { display: flex; }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        #game-sidebar {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+        }
+        .sidebar-closed { transform: translateX(100%); }
+        @media (max-width: 1024px) {
+            .sidebar-closed { transform: translateY(100%); }
+        }
     </style>
 </head>
 <body class="select-none overflow-x-hidden">
@@ -25,19 +33,19 @@
     <!-- PANTALLA DE CARGA -->
     <div id="screen-loading" class="fixed inset-0 flex flex-col items-center justify-center bg-slate-950 z-[100]">
         <div class="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-6"></div>
-        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">Sincronizando Multiverso...</p>
+        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500 text-center">Invirtiendo Realidades...</p>
     </div>
 
-    <!-- PANTALLA DE REGISTRO (NICKNAME) -->
+    <!-- REGISTRO -->
     <div id="screen-auth" class="screen">
         <div class="text-center mb-12">
-            <h2 class="text-5xl font-black italic uppercase tracking-tighter">Tu <span class="text-indigo-500">Avatar</span></h2>
-            <p class="text-slate-500 font-bold uppercase text-[10px] tracking-widest mt-2">¿Cómo te conocerán en el duelo?</p>
+            <h2 class="text-5xl font-black italic uppercase tracking-tighter">Pop<span class="text-indigo-500">ID</span></h2>
+            <p class="text-slate-500 font-bold uppercase text-[10px] mt-2">¿Quién eres tú en este universo?</p>
         </div>
         <div class="w-full max-w-md bg-slate-900 p-8 rounded-[3rem] border-2 border-slate-800 shadow-2xl">
-            <input type="text" id="nickname-input" placeholder="Escribe tu Nick..." maxlength="12" class="w-full bg-slate-950 border-2 border-slate-700 p-5 rounded-2xl text-center font-black uppercase text-2xl text-white outline-none focus:border-indigo-500 transition-all mb-6">
-            <button onclick="window.saveNickname()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-5 rounded-2xl font-black uppercase shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3">
-                Entrar al Multiverso <i data-lucide="chevron-right"></i>
+            <input type="text" id="nickname-input" placeholder="Tu Apodo..." maxlength="12" class="w-full bg-slate-950 border-2 border-slate-700 p-5 rounded-2xl text-center font-black uppercase text-2xl text-white outline-none focus:border-indigo-500 mb-6">
+            <button onclick="window.saveNickname()" class="w-full bg-indigo-600 p-5 rounded-2xl font-black uppercase shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3">
+                Conectar <i data-lucide="zap"></i>
             </button>
         </div>
     </div>
@@ -46,141 +54,138 @@
     <div id="screen-home" class="screen">
         <div class="text-center mb-16">
             <h1 class="text-7xl md:text-9xl font-black italic tracking-tighter uppercase leading-none">Pop<span class="text-indigo-500">Duel</span></h1>
-            <p id="welcome-user" class="text-slate-500 font-bold uppercase tracking-[0.5em] text-[10px] mt-2">Bienvenido, Guerrero</p>
+            <p id="welcome-user" class="text-slate-500 font-bold uppercase tracking-[0.5em] text-[10px] mt-4">Listo para el Duelo</p>
         </div>
         <div class="max-w-md w-full space-y-6">
             <button onclick="window.navTo('screen-categories')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-8 rounded-[2.5rem] font-black uppercase text-xl shadow-2xl transition-all active:scale-95 flex items-center justify-center gap-4">
-                <i data-lucide="plus-circle" class="w-8 h-8"></i> Crear Partida
+                <i data-lucide="plus-circle" class="w-8 h-8"></i> Crear Sala
             </button>
             <button onclick="window.navTo('screen-join')" class="w-full bg-slate-900 border-2 border-slate-800 hover:border-indigo-500 text-white py-8 rounded-[2.5rem] font-black uppercase text-xl shadow-2xl transition-all active:scale-95 flex items-center justify-center gap-4">
-                <i data-lucide="users" class="w-8 h-8 text-indigo-500"></i> Unirse a Duelo
+                <i data-lucide="users" class="w-8 h-8 text-indigo-500"></i> Unirse
             </button>
         </div>
     </div>
 
-    <!-- SELECCIÓN DE CATEGORÍAS -->
+    <!-- CATEGORÍAS -->
     <div id="screen-categories" class="screen">
-        <div class="text-center mb-10">
-            <button onclick="window.navTo('screen-home')" class="text-slate-500 font-bold uppercase text-[10px] tracking-widest mb-4 hover:text-white flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Volver</button>
-            <h2 class="text-4xl font-black italic uppercase tracking-tighter">Selecciona un Mundo</h2>
-        </div>
+        <button onclick="window.navTo('screen-home')" class="mb-8 text-slate-500 font-bold uppercase text-[10px] flex items-center gap-2 mx-auto hover:text-white transition-colors"><i data-lucide="arrow-left" class="w-4 h-4"></i> Volver</button>
+        <h2 class="text-4xl font-black italic uppercase tracking-tighter mb-8 text-center">Elige tu Campo de Batalla</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full" id="cat-grid"></div>
     </div>
 
     <!-- UNIRSE -->
     <div id="screen-join" class="screen">
-        <div class="text-center mb-10">
-            <button onclick="window.navTo('screen-home')" class="text-slate-500 font-bold uppercase text-[10px] tracking-widest mb-4 hover:text-white flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Volver</button>
-            <h2 class="text-4xl font-black italic uppercase tracking-tighter">Introduce el Código</h2>
-        </div>
-        <div class="bg-slate-900 p-10 rounded-[4rem] border-2 border-slate-800 shadow-2xl w-full max-w-md">
-            <div id="join-loading" class="hidden mb-6 flex flex-col items-center">
-                <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-2"></div>
-                <p class="text-[8px] font-black uppercase text-indigo-400">Buscando sala...</p>
-            </div>
-            <input type="number" id="join-input" maxlength="6" placeholder="000000" class="w-full bg-slate-950 border-2 border-slate-700 p-6 rounded-3xl text-center font-black uppercase text-5xl text-indigo-400 outline-none focus:border-indigo-500 transition-all tracking-[0.2em]" oninput="window.autoJoinCheck(this.value)">
-            <p id="join-error" class="text-red-400 text-[10px] font-bold text-center mt-6 uppercase tracking-widest hidden">Sala no encontrada o llena</p>
+        <button onclick="window.navTo('screen-home')" class="mb-8 text-slate-500 font-bold uppercase text-[10px] flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Volver</button>
+        <div class="bg-slate-900 p-10 rounded-[4rem] border-2 border-slate-800 shadow-2xl w-full max-w-md text-center">
+            <h2 class="text-2xl font-black uppercase mb-6 italic">Código Secreto</h2>
+            <div id="join-loading" class="hidden mb-4 animate-bounce text-indigo-400 font-black text-xs">BUSCANDO...</div>
+            <input type="number" id="join-input" maxlength="6" placeholder="000000" class="w-full bg-slate-950 border-2 border-slate-700 p-6 rounded-3xl text-center font-black text-5xl text-indigo-400 outline-none focus:border-indigo-500 tracking-[0.1em]" oninput="window.autoJoinCheck(this.value)">
+            <p id="join-error" class="text-red-400 text-[10px] font-bold mt-6 uppercase hidden">SALA NO VÁLIDA</p>
         </div>
     </div>
 
     <!-- LOBBY -->
-    <div id="screen-lobby" class="screen bg-slate-950/80 backdrop-blur-xl">
+    <div id="screen-lobby" class="screen bg-slate-950">
         <div class="bg-slate-900 border-2 border-slate-800 w-full max-w-2xl rounded-[4rem] p-8 md:p-12 shadow-2xl text-center">
-            <h2 class="text-3xl font-black italic uppercase mb-10">Sala de Espera</h2>
+            <h2 class="text-3xl font-black italic uppercase mb-10 tracking-widest">Sala de Preparación</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                <!-- HOST -->
                 <div class="p-8 bg-slate-950 rounded-[3rem] border-2 border-indigo-500 flex flex-col items-center">
-                    <div class="w-20 h-20 bg-indigo-500 rounded-3xl flex items-center justify-center mb-4 pulse-indigo">
-                        <i data-lucide="crown" class="text-white w-10 h-10"></i>
-                    </div>
-                    <p class="text-[10px] font-black uppercase text-indigo-400">Anfitrión</p>
-                    <h3 id="lobby-p1-name" class="font-bold text-white italic truncate w-full">Tú</h3>
+                    <div class="w-20 h-20 bg-indigo-500 rounded-3xl flex items-center justify-center mb-4 pulse-indigo text-white"><i data-lucide="shield" class="w-10 h-10"></i></div>
+                    <p id="lobby-p1-name" class="font-bold text-white italic truncate w-full">---</p>
                 </div>
-                <!-- RIVAL -->
-                <div id="lobby-rival-slot" class="p-8 bg-slate-950/40 rounded-[3rem] border-2 border-dashed border-slate-700 flex flex-col items-center transition-all duration-500">
-                    <div id="rival-icon-bg" class="w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center mb-4">
-                        <i data-lucide="user-plus" id="rival-icon" class="text-slate-600 w-10 h-10"></i>
-                    </div>
-                    <p id="rival-role-label" class="text-[10px] font-black uppercase text-slate-500">Rival</p>
+                <div id="lobby-rival-slot" class="p-8 bg-slate-950/40 rounded-[3rem] border-2 border-dashed border-slate-700 flex flex-col items-center">
+                    <div id="rival-icon-bg" class="w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center mb-4 text-slate-600"><i data-lucide="user-plus" class="w-10 h-10"></i></div>
                     <h3 id="rival-name-display" class="font-bold text-slate-600 italic truncate w-full">Esperando...</h3>
                 </div>
             </div>
 
-            <div class="bg-slate-950 p-8 rounded-3xl border-2 border-slate-800 mb-8">
-                <p class="text-[9px] font-black uppercase text-slate-500 tracking-[0.4em] mb-2">Código de Invitación</p>
-                <div class="flex items-center justify-center gap-6">
-                    <span id="room-code-text" class="text-5xl font-black text-indigo-400 tracking-[0.2em]">------</span>
-                    <button onclick="window.copyRoomCode()" class="p-4 rounded-2xl bg-slate-800 text-white active:scale-90 transition-all"><i data-lucide="copy"></i></button>
-                </div>
+            <div class="bg-slate-950 p-8 rounded-3xl mb-8">
+                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Comparte este código</p>
+                <span id="room-code-text" class="text-6xl font-black text-indigo-400 tracking-widest">------</span>
             </div>
-            <button onclick="location.reload()" class="text-slate-600 font-bold text-xs uppercase hover:text-red-400 tracking-widest">Cancelar Partida</button>
+            <button onclick="location.reload()" class="text-slate-600 font-bold text-xs uppercase hover:text-red-400 tracking-widest">Abandonar Sala</button>
         </div>
     </div>
 
-    <!-- SELECCIÓN SECRETA -->
+    <!-- PICKING -->
     <div id="screen-picking" class="screen bg-slate-50 !justify-start pt-12 text-slate-900">
-        <h2 class="text-5xl font-black italic uppercase tracking-tighter mb-2">Tu Secreto</h2>
-        <p class="text-slate-400 font-bold uppercase text-[10px] tracking-widest mb-12">No dejes que el rival lo vea</p>
-        <div id="pick-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4 max-w-6xl w-full"></div>
-        <div id="pick-waiting-overlay" class="hidden fixed inset-0 bg-indigo-600/90 flex flex-col items-center justify-center z-50 text-white">
+        <h2 class="text-5xl font-black italic uppercase tracking-tighter mb-2 text-center w-full">Tu Secreto</h2>
+        <p class="text-slate-400 font-bold uppercase text-[10px] text-center w-full mb-12">El rival no podrá ver esto. Elige con cuidado.</p>
+        <div id="pick-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 w-full max-w-7xl px-4 pb-20"></div>
+        <div id="pick-waiting-overlay" class="hidden fixed inset-0 bg-indigo-600/95 flex flex-col items-center justify-center z-50 text-white">
             <div class="w-20 h-20 border-8 border-white border-t-transparent rounded-full animate-spin mb-8"></div>
-            <h2 class="text-4xl font-black italic uppercase text-center px-6">El rival está eligiendo...</h2>
+            <h2 class="text-4xl font-black italic uppercase px-6 text-center">El oponente está decidiendo...</h2>
         </div>
     </div>
 
-    <!-- TABLERO PRINCIPAL -->
+    <!-- JUEGO -->
     <div id="screen-game" class="screen !flex-row !p-0 bg-slate-100 text-slate-900 overflow-hidden">
-        <div class="flex-grow p-4 lg:p-10 h-screen overflow-y-auto custom-scrollbar">
-            <div class="flex justify-between items-center mb-8 bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-200">
-                <button onclick="location.reload()" class="text-slate-400 font-black text-[10px] uppercase flex items-center gap-2 hover:text-red-500"><i data-lucide="log-out" class="w-4 h-4"></i> Salir</button>
-                <div class="flex items-center gap-4 px-6 py-2 rounded-full bg-slate-50 border">
+        
+        <!-- Tablero -->
+        <div class="flex-grow h-screen overflow-y-auto custom-scrollbar p-4 lg:p-10">
+            <div class="flex justify-between items-center mb-8 bg-white p-5 rounded-[2.5rem] shadow-md border border-slate-200">
+                <button onclick="location.reload()" class="text-slate-400 font-black text-[10px] uppercase flex items-center gap-1 hover:text-red-500"><i data-lucide="log-out" class="w-4 h-4"></i> Salir</button>
+                <div class="flex items-center gap-3 bg-slate-50 px-6 py-2 rounded-full border">
                     <div id="turn-dot" class="w-3 h-3 rounded-full bg-slate-300"></div>
-                    <span id="turn-label" class="font-black uppercase text-[11px] tracking-widest text-slate-500">Espere...</span>
+                    <span id="turn-label" class="font-black uppercase text-[11px] tracking-widest text-slate-500 italic">Cargando...</span>
                 </div>
             </div>
-            <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 pb-24"></div>
+            <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3 pb-32"></div>
         </div>
 
-        <div class="w-full lg:w-[24rem] bg-white border-l p-6 flex flex-col shadow-2xl h-screen">
-            <div class="mb-6 bg-slate-900 p-5 rounded-[2.5rem] text-white flex items-center gap-5 border-b-8 border-indigo-500 shadow-xl">
-                <img id="identity-img" src="" class="w-16 h-16 rounded-2xl object-cover border-2 border-white/20 bg-slate-800">
-                <div class="overflow-hidden">
-                    <p class="text-[8px] font-black uppercase text-indigo-400">Eres:</p>
-                    <h3 id="identity-name" class="text-xl font-black italic uppercase truncate">---</h3>
+        <!-- Botón Toggle Chat -->
+        <button id="toggle-sidebar" onclick="window.toggleSidebar()" class="fixed bottom-6 right-6 w-16 h-16 bg-indigo-600 text-white rounded-full shadow-2xl flex items-center justify-center z-[60] pulse-indigo lg:hidden">
+            <i data-lucide="message-circle" id="sidebar-icon"></i>
+        </button>
+
+        <!-- Consola Sidebar -->
+        <div id="game-sidebar" class="sidebar-closed lg:translate-x-0 fixed lg:relative inset-x-0 bottom-0 lg:bottom-auto h-[75vh] lg:h-screen w-full lg:w-[28rem] bg-white border-t lg:border-t-0 lg:border-l p-6 flex flex-col shadow-2xl lg:shadow-none">
+            
+            <div class="flex justify-between items-center mb-6 bg-slate-900 p-5 rounded-[2.5rem] text-white border-b-4 border-indigo-500 shadow-xl">
+                <div id="my-identity-emoji" class="text-4xl">❓</div>
+                <div class="overflow-hidden flex-grow ml-4">
+                    <p class="text-[9px] font-black text-indigo-400 uppercase">Tu Personaje Secreto</p>
+                    <h3 id="my-identity-name" class="font-black text-lg uppercase truncate italic">---</h3>
                 </div>
+                <button onclick="window.toggleSidebar()" class="lg:hidden p-2 text-white/30"><i data-lucide="chevron-down"></i></button>
             </div>
-            <div id="answer-panel" class="hidden mb-6 bg-yellow-400 p-8 rounded-[3rem] text-black shadow-2xl">
-                <p id="rival-q" class="text-md font-black italic mb-6 text-center">"..."</p>
+
+            <div id="answer-panel" class="hidden mb-6 bg-yellow-400 p-6 rounded-[2.5rem] text-black shadow-xl animate-pulse">
+                <p id="rival-q" class="text-sm font-black italic mb-4 text-center">"..."</p>
                 <div class="flex gap-3">
-                    <button onclick="window.sendAnswerAction('SÍ')" class="flex-grow bg-black text-white py-4 rounded-2xl font-black uppercase text-xs">SÍ</button>
-                    <button onclick="window.sendAnswerAction('NO')" class="flex-grow bg-white text-black py-4 rounded-2xl font-black uppercase text-xs border border-black/10">NO</button>
+                    <button onclick="window.sendAnswerAction('SÍ')" class="flex-1 bg-black text-white py-4 rounded-2xl font-black text-xs">SÍ</button>
+                    <button onclick="window.sendAnswerAction('NO')" class="flex-1 bg-white border-2 border-black/10 text-black py-4 rounded-2xl font-black text-xs">NO</button>
                 </div>
             </div>
-            <div id="game-history" class="flex-grow overflow-y-auto mb-6 space-y-3 custom-scrollbar pr-2"></div>
-            <div class="space-y-3 mt-auto">
-                <input type="text" id="q-input" placeholder="Haz tu pregunta..." class="w-full bg-slate-100 p-5 rounded-[2rem] text-xs font-bold outline-none border-2 border-transparent focus:border-indigo-500 text-slate-900">
-                <div class="bg-slate-900 p-4 rounded-[2.5rem] border-b-8 border-indigo-500">
-                    <select id="resolve-select" onchange="window.handleResolve(this.value)" class="w-full bg-slate-900 text-white p-2 text-[10px] font-black uppercase outline-none"></select>
+
+            <p class="text-[10px] font-black text-slate-300 uppercase mb-2 ml-1 tracking-widest">Log de Batalla</p>
+            <div id="game-history" class="flex-grow overflow-y-auto mb-4 space-y-2 pr-1 custom-scrollbar"></div>
+
+            <div class="mt-auto space-y-3">
+                <input type="text" id="q-input" placeholder="Haz tu pregunta..." class="w-full bg-slate-100 p-5 rounded-2xl text-xs font-bold outline-none border-2 border-transparent focus:border-indigo-500 text-slate-800 transition-all shadow-inner">
+                <div class="bg-slate-900 p-3 rounded-2xl border-b-4 border-indigo-500 shadow-lg">
+                    <select id="resolve-select" onchange="window.handleResolve(this.value)" class="w-full bg-slate-900 text-white p-2 text-[10px] font-black uppercase outline-none cursor-pointer">
+                        <option value="">¿QUIÉN ES EL RIVAL?</option>
+                    </select>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- RESULTADOS -->
-    <div id="screen-result" class="hidden fixed inset-0 bg-slate-950/98 flex items-center justify-center z-[200] p-6 backdrop-blur-xl">
-        <div id="result-box" class="p-12 rounded-[5rem] text-center text-white shadow-2xl border-8 max-w-md w-full">
-            <h2 id="result-text" class="text-7xl font-black italic mb-8 uppercase tracking-tighter">¡VICTORIA!</h2>
-            <button onclick="location.reload()" class="w-full bg-white text-slate-900 py-6 rounded-3xl font-black uppercase text-xs">Volver al Inicio</button>
+    <!-- RESULTADO -->
+    <div id="screen-result" class="hidden fixed inset-0 bg-slate-950/98 flex flex-col items-center justify-center z-[200] p-6 text-center backdrop-blur-xl">
+        <div id="result-box" class="p-12 rounded-[5rem] border-8 shadow-2xl max-w-sm w-full transition-all scale-110">
+            <h2 id="result-text" class="text-7xl font-black italic mb-8 uppercase tracking-tighter">VICTORIA</h2>
+            <button onclick="location.reload()" class="bg-white text-slate-900 px-12 py-5 rounded-2xl font-black uppercase text-sm w-full shadow-2xl">Volver al Inicio</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIGURACIÓN (Tus credenciales)
         const firebaseConfig = {
             apiKey: "AIzaSyBBe77umMs5vu5zq1Xr9YkJzH27a-sZdsc",
             authDomain: "quien-es-quien-8edf0.firebaseapp.com",
@@ -193,34 +198,88 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appIdPrefix = "pop-duel-multiverse-v10";
+        const appIdPrefix = "pop-duel-multiverse-v120"; // Versión 60+ por categoría
 
-        // BASE DE DATOS
+        // BASE DE DATOS MASIVA (60+ por categoría)
         const DATABASE = [
-            { id: "m1", name: "Coca-Cola", group: "marcas", img: "🥤" },
-            { id: "m2", name: "McDonald's", group: "marcas", img: "🍔" },
-            { id: "m3", name: "Apple", group: "marcas", img: "🍎" },
-            { id: "m4", name: "Nike", group: "marcas", img: "👟" },
-            { id: "m5", name: "Google", group: "marcas", img: "🔍" },
-            { id: "f1", name: "Messi", group: "famosos", img: "⚽" },
-            { id: "f2", name: "Elon Musk", group: "famosos", img: "🚀" },
-            { id: "f3", name: "Taylor Swift", group: "famosos", img: "🎙️" },
-            { id: "c1", name: "Spider-Man", group: "ficcion", img: "🕷️" },
-            { id: "c2", name: "Batman", group: "ficcion", img: "🦇" },
-            { id: "c3", name: "Harry Potter", group: "ficcion", img: "🪄" },
-            { id: "c4", name: "Pikachu", group: "ficcion", img: "⚡" }
+            // FICCIÓN (61 personajes)
+            {id:"f1",n:"Mario",g:"ficcion",i:"🍄"},{id:"f2",n:"Goku",g:"ficcion",i:"🥋"},{id:"f3",n:"Spider-Man",g:"ficcion",i:"🕷️"},
+            {id:"f4",n:"Batman",g:"ficcion",i:"🦇"},{id:"f5",n:"Pikachu",g:"ficcion",i:"⚡"},{id:"f6",n:"Mickey",g:"ficcion",i:"🐭"},
+            {id:"f7",n:"Shrek",g:"ficcion",i:"👹"},{id:"f8",n:"Elsa",g:"ficcion",i:"❄️"},{id:"f9",n:"Homer Simpson",g:"ficcion",i:"🍩"},
+            {id:"f10",n:"Sonic",g:"ficcion",i:"🦔"},{id:"f11",n:"Harry Potter",g:"ficcion",i:"🪄"},{id:"f12",n:"Link",g:"ficcion",i:"🗡️"},
+            {id:"f13",n:"Buzz Lightyear",g:"ficcion",i:"🚀"},{id:"f14",n:"Minion",g:"ficcion",i:"🍌"},{id:"f15",n:"SpongeBob",g:"ficcion",i:"🍍"},
+            {id:"f16",n:"Sherlock",g:"ficcion",i:"🕵️"},{id:"f17",n:"Naruto",g:"ficcion",i:"🍥"},{id:"f18",n:"Iron Man",g:"ficcion",i:"🦾"},
+            {id:"f19",n:"Joker",g:"ficcion",i:"🤡"},{id:"f20",n:"Donald",g:"ficcion",i:"🦆"},{id:"f21",n:"Luffy",g:"ficcion",i:"👒"},
+            {id:"f22",n:"Voldemort",g:"ficcion",i:"🐍"},{id:"f23",n:"Yoda",g:"ficcion",i:"🍵"},{id:"f24",n:"Frodo",g:"ficcion",i:"💍"},
+            {id:"f25",n:"Simba",g:"ficcion",i:"🦁"},{id:"f26",n:"Bugs Bunny",g:"ficcion",i:"🥕"},{id:"f27",n:"Woody",g:"ficcion",i:"🤠"},
+            {id:"f28",n:"Pikachu",g:"ficcion",i:"🐁"},{id:"f29",n:"Superman",g:"ficcion",i:"🦸"},{id:"f30",n:"Stitch",g:"ficcion",i:"🌺"},
+            {id:"f31",n:"Patrick Star",g:"ficcion",i:"⭐"},{id:"f32",n:"Squidward",g:"ficcion",i:"🎷"},{id:"f33",n:"Vegeta",g:"ficcion",i:"🔥"},
+            {id:"f34",n:"Doraemon",g:"ficcion",i:"🐱"},{id:"f35",n:"Garfield",g:"ficcion",i:"🍝"},{id:"f36",n:"Scooby Doo",g:"ficcion",i:"🐕"},
+            {id:"f37",n:"Gandalf",g:"ficcion",i:"🧙"},{id:"f38",n:"Legolas",g:"ficcion",i:"🏹"},{id:"f39",n:"Darth Vader",g:"ficcion",i:"👺"},
+            {id:"f40",n:"Deadpool",g:"ficcion",i:"⚔️"},{id:"f41",n:"Wolverine",g:"ficcion",i:"🐺"},{id:"f42",n:"Thor",g:"ficcion",i:"🔨"},
+            {id:"f43",n:"Wonder Woman",g:"ficcion",i:"👑"},{id:"f44",n:"Flash",g:"ficcion",i:"🏃"},{id:"f45",n:"Ben 10",g:"ficcion",i:"⌚"},
+            {id:"f46",n:"Rigby",g:"ficcion",i:"🦝"},{id:"f47",n:"Mordecai",g:"ficcion",i:"🐦"},{id:"f48",n:"Finn",g:"ficcion",i:"🗡️"},
+            {id:"f49",n:"Jake",g:"ficcion",i:"🐶"},{id:"f50",n:"Gumball",g:"ficcion",i:"🐱"},{id:"f51",n:"Darwin",g:"ficcion",i:"🐟"},
+            {id:"f52",n:"Perry Platypus",g:"ficcion",i:"🕵️‍♂️"},{id:"f53",n:"Phineas",g:"ficcion",i:"📐"},{id:"f54",n:"Ferb",g:"ficcion",i:"🛠️"},
+            {id:"f55",n:"Mabel",g:"ficcion",i:"🌈"},{id:"f56",n:"Dipper",g:"ficcion",i:"🌲"},{id:"f57",n:"Bill Cipher",g:"ficcion",i:"👁️"},
+            {id:"f58",n:"Rick",g:"ficcion",i:"🧪"},{id:"f59",n:"Morty",g:"ficcion",i:"🌀"},{id:"f60",n:"Bender",g:"ficcion",i:"🤖"},
+            {id:"f61",n:"Seiya",g:"ficcion",i:"🛡️"},
+
+            // MARCAS (60+)
+            {id:"m1",n:"Coca-Cola",g:"marcas",i:"🥤"},{id:"m2",n:"Apple",g:"marcas",i:"🍎"},{id:"m3",n:"Nike",g:"marcas",i:"👟"},
+            {id:"m4",n:"McDonald's",g:"marcas",i:"🍔"},{id:"m5",n:"Pepsi",g:"marcas",i:"🔵"},{id:"m6",n:"Netflix",g:"marcas",i:"📺"},
+            {id:"m7",n:"Google",g:"marcas",i:"🔍"},{id:"m8",n:"Amazon",g:"marcas",i:"📦"},{id:"m9",n:"Tesla",g:"marcas",i:"⚡"},
+            {id:"m10",n:"Starbucks",g:"marcas",i:"☕"},{id:"m11",n:"Disney",g:"marcas",i:"🏰"},{id:"m12",n:"YouTube",g:"marcas",i:"🎬"},
+            {id:"m13",n:"TikTok",g:"marcas",i:"🎵"},{id:"m14",n:"Spotify",g:"marcas",i:"🎧"},{id:"m15",n:"Nintendo",g:"marcas",i:"🎮"},
+            {id:"m16",n:"Sony",g:"marcas",i:"🕹️"},{id:"m17",n:"Xbox",g:"marcas",i:"🟢"},{id:"m18",n:"Lego",g:"marcas",i:"🧱"},
+            {id:"m19",n:"Ferrari",g:"marcas",i:"🐎"},{id:"m20",n:"Instagram",g:"marcas",i:"📸"},{id:"m21",n:"Adidas",g:"marcas",i:"🦓"},
+            {id:"m22",n:"Puma",g:"marcas",i:"🐆"},{id:"m23",n:"Samsung",g:"marcas",i:"📱"},{id:"m24",n:"Microsoft",g:"marcas",i:"💻"},
+            {id:"m25",n:"Facebook",g:"marcas",i:"👍"},{id:"m26",n:"Twitter/X",g:"marcas",i:"🐦"},{id:"m27",n:"Burger King",g:"marcas",i:"👑"},
+            {id:"m28",n:"KFC",g:"marcas",i:"🍗"},{id:"m29",n:"Pizza Hut",g:"marcas",i:"🍕"},{id:"m30",n:"Dominos",g:"marcas",i:"🎲"},
+            {id:"m31",n:"IKEA",g:"marcas",i:"🪑"},{id:"m32",n:"Red Bull",g:"marcas",i:"🐃"},{id:"m33",n:"Louis Vuitton",g:"marcas",i:"👜"},
+            {id:"m34",n:"Rolex",g:"marcas",i:"⌚"},{id:"m35",n:"Gucci",g:"marcas",i:"🕶️"},{id:"m36",n:"Prada",g:"marcas",i:"👠"},
+            {id:"m37",n:"Visa",g:"marcas",i:"💳"},{id:"m38",n:"PayPal",g:"marcas",i:"💰"},{id:"m39",n:"Slack",g:"marcas",i:"💬"},
+            {id:"m40",n:"Discord",g:"marcas",i:"👾"},{id:"m41",n:"Uber",g:"marcas",i:"🚗"},{id:"m42",n:"Airbnb",g:"marcas",i:"🏠"},
+            {id:"m43",n:"H&M",g:"marcas",i:"👕"},{id:"m44",n:"Zara",g:"marcas",i:"👗"},{id:"m45",n:"Nestlé",g:"marcas",i:"🍫"},
+            {id:"m46",n:"Mastercard",g:"marcas",i:"🟡"},{id:"m47",n:"Intel",g:"marcas",i:"💾"},{id:"m48",n:"Nvidia",g:"marcas",i:"🟩"},
+            {id:"m49",n:"Warner Bros",g:"marcas",i:"🎥"},{id:"m50",n:"Paramount",g:"marcas",i:"🏔️"},{id:"m51",n:"Audi",g:"marcas",i:"⭕"},
+            {id:"m52",n:"BMW",g:"marcas",i:"⚪"},{id:"m53",n:"Mercedes",g:"marcas",i:"💠"},{id:"m54",n:"Toyota",g:"marcas",i:"🚜"},
+            {id:"m55",n:"Skype",g:"marcas",i:"🔵"},{id:"m56",n:"Dropbox",g:"marcas",i:"📂"},{id:"m57",n:"Subway",g:"marcas",i:"🥖"},
+            {id:"m58",n:"Chanel",g:"marcas",i:"💍"},{id:"m59",n:"Adobe",g:"marcas",i:"🎨"},{id:"m60",n:"Canva",g:"marcas",i:"🖌️"},
+
+            // FAMOSOS (60+)
+            {id:"e1",n:"Messi",g:"famosos",i:"⚽"},{id:"e2",n:"CR7",g:"famosos",i:"🇵🇹"},{id:"e3",n:"Elon Musk",g:"famosos",i:"🚀"},
+            {id:"e4",n:"Jeff Bezos",g:"famosos",i:"🛸"},{id:"e5",n:"Taylor Swift",g:"famosos",i:"🎙️"},{id:"e6",n:"Lady Gaga",g:"famosos",i:"🎹"},
+            {id:"e7",n:"Beyonce",g:"famosos",i:"🐝"},{id:"e8",n:"Shakira",g:"famosos",i:"🐺"},{id:"e9",n:"Brad Pitt",g:"famosos",i:"🎬"},
+            {id:"e10",n:"Will Smith",g:"famosos",i:"🧤"},{id:"e11",n:"Tom Cruise",g:"famosos",i:"🏍️"},{id:"e12",n:"Dwayne Johnson",g:"famosos",i:"🪨"},
+            {id:"e13",n:"Zendaya",g:"famosos",i:"🦋"},{id:"e14",n:"Rihanna",g:"famosos",i:"🌂"},{id:"e15",n:"Drake",g:"famosos",i:"🦉"},
+            {id:"e16",n:"Bad Bunny",g:"famosos",i:"🐰"},{id:"e17",n:"Justin Bieber",g:"famosos",i:"🎤"},{id:"e18",n:"Lady Gaga",g:"famosos",i:"🎭"},
+            {id:"e19",n:"Adele",g:"famosos",i:"🪐"},{id:"e20",n:"Ariana Grande",g:"famosos",i:"🍩"},{id:"e21",n:"Kim Kardashian",g:"famosos",i:"💎"},
+            {id:"e22",n:"Kylie Jenner",g:"famosos",i:"💄"},{id:"e23",n:"Bill Gates",g:"famosos",i:"🪟"},{id:"e24",n:"Steve Jobs",g:"famosos",i:"🍏"},
+            {id:"e25",n:"Mark Zuckerberg",g:"famosos",i:"🕶️"},{id:"e26",n:"Albert Einstein",g:"famosos",i:"🧠"},{id:"e27",n:"Picasso",g:"famosos",i:"🖼️"},
+            {id:"e28",n:"Vincent Van Gogh",g:"famosos",i:"👂"},{id:"e29",n:"Michael Jordan",g:"famosos",i:"🏀"},{id:"e30",n:"Tiger Woods",g:"famosos",i:"⛳"},
+            {id:"e31",n:"LeBron James",g:"famosos",i:"👑"},{id:"e32",n:"Serena Williams",g:"famosos",i:"🎾"},{id:"e33",n:"Roger Federer",g:"famosos",i:"🎾"},
+            {id:"e34",n:"Usain Bolt",g:"famosos",i:"⚡"},{id:"e35",n:"Muhammad Ali",g:"famosos",i:"🥊"},{id:"e36",n:"Leonardo DiCaprio",g:"famosos",i:"🚢"},
+            {id:"e37",n:"Margot Robbie",g:"famosos",i:"🎀"},{id:"e38",n:"Robert Downey Jr",g:"famosos",i:"🦾"},{id:"e39",n:"Scarlett Johansson",g:"famosos",i:"🕷️"},
+            {id:"e40",n:"Keanu Reeves",g:"famosos",i:"💊"},{id:"e41",n:"Eminem",g:"famosos",i:"🍫"},{id:"e42",n:"Ed Sheeran",g:"famosos",i:"🎸"},
+            {id:"e43",n:"Kanye West",g:"famosos",i:"🐻"},{id:"e44",n:"Oprah",g:"famosos",i:"📺"},{id:"e45",n:"MrBeast",g:"famosos",i:"💵"},
+            {id:"e46",n:"PewDiePie",g:"famosos",i:"👊"},{id:"e47",n:"Stephen Hawking",g:"famosos",i:"🌌"},{id:"e48",n:"Stan Lee",g:"famosos",i:"🦸"},
+            {id:"e49",n:"Jackie Chan",g:"famosos",i:"🥋"},{id:"e50",n:"Bruce Lee",g:"famosos",i:"🐉"},{id:"e51",n:"Malala",g:"famosos",i:"📚"},
+            {id:"e52",n:"Greta Thunberg",g:"famosos",i:"🌍"},{id:"e53",n:"Dalai Lama",g:"famosos",i:"🧘"},{id:"e54",n:"Pope Francis",g:"famosos",i:"🇻🇦"},
+            {id:"e55",n:"Nelson Mandela",g:"famosos",i:"🇿🇦"},{id:"e56",n:"Gandhi",g:"famosos",i:"🕊️"},{id:"e57",n:"Martin Luther King",g:"famosos",i:"🗣️"},
+            {id:"e58",n:"Freddie Mercury",g:"famosos",i:"👑"},{id:"e59",n:"Michael Jackson",g:"famosos",i:"🧤"},{id:"e60",n:"Elvis Presley",g:"famosos",i:"🕺"},
+            {id:"e61",n:"Marilyn Monroe",g:"famosos",i:"💋"}
         ];
 
-        let currentUser = null;
-        let myNickname = "";
+        let user = null;
+        let myNick = "";
         let roomCode = "";
         let roomData = null;
+        let sidebarOpen = false;
 
         window.onload = async () => {
             lucide.createIcons();
-            initCategoryButtons();
-            
-            // Auth Handling
+            initCategories();
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth));
@@ -229,8 +288,8 @@
 
             onAuthStateChanged(auth, (u) => {
                 if (u) {
-                    currentUser = u;
-                    window.navTo('screen-auth'); // Primero pedir Nickname
+                    user = u;
+                    window.navTo('screen-auth');
                     document.getElementById('screen-loading').classList.add('hidden');
                 }
             });
@@ -239,8 +298,8 @@
         window.saveNickname = () => {
             const val = document.getElementById('nickname-input').value.trim();
             if(val.length < 2) return;
-            myNickname = val;
-            document.getElementById('welcome-user').innerText = `Bienvenido, ${myNickname}`;
+            myNick = val;
+            document.getElementById('welcome-user').innerText = `Agente: ${myNick}`;
             window.navTo('screen-home');
         };
 
@@ -249,122 +308,111 @@
             document.getElementById(id).classList.add('active');
         };
 
-        function initCategoryButtons() {
+        window.toggleSidebar = () => {
+            sidebarOpen = !sidebarOpen;
+            const sb = document.getElementById('game-sidebar');
+            const ic = document.getElementById('sidebar-icon');
+            if(sidebarOpen) {
+                sb.classList.remove('sidebar-closed');
+                ic.setAttribute('data-lucide', 'x');
+            } else {
+                sb.classList.add('sidebar-closed');
+                ic.setAttribute('data-lucide', 'message-circle');
+            }
+            lucide.createIcons();
+        };
+
+        function initCategories() {
             const grid = document.getElementById('cat-grid');
             const cats = [
-                {id:'variado', n:'Variado', d:'Todo mezclado'},
-                {id:'marcas', n:'Logos', d:'Marcas mundiales'},
-                {id:'famosos', n:'Estrellas', d:'Gente real'},
-                {id:'ficcion', n:'Ficción', d:'Cartoons y Cine'}
+                {id:'variado', n:'Variado', d:'Todo el Multiverso'},
+                {id:'ficcion', n:'Ficción', d:'Anime, Cine y Games'},
+                {id:'marcas', n:'Marcas', d:'Logos Mundiales'},
+                {id:'famosos', n:'Famosos', d:'Estrellas Reales'}
             ];
             grid.innerHTML = "";
             cats.forEach(c => {
+                const count = c.id === 'variado' ? DATABASE.length : DATABASE.filter(x => x.g === c.id).length;
                 const b = document.createElement('button');
-                b.className = "bg-slate-900 border-2 border-slate-800 p-8 rounded-[2rem] hover:border-indigo-500 transition-all text-center group active:scale-95";
-                b.innerHTML = `<h3 class="font-black uppercase text-xl mb-1 group-hover:text-indigo-400 transition-colors">${c.n}</h3><p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">${c.d}</p>`;
-                b.onclick = () => window.createRoomAction(c.id);
+                b.className = "bg-slate-900 border-2 border-slate-800 p-8 rounded-3xl hover:border-indigo-500 transition-all text-center active:scale-95 group";
+                b.innerHTML = `
+                    <h3 class="font-black uppercase text-xl group-hover:text-indigo-400">${c.n}</h3>
+                    <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">${c.d}</p>
+                    <div class="mt-4 inline-block bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/30">
+                        <span class="text-[10px] font-black text-indigo-400">${count} PERSONAJES</span>
+                    </div>
+                `;
+                b.onclick = () => createRoom(c.id);
                 grid.appendChild(b);
             });
         }
 
-        window.createRoomAction = async (cat) => {
+        async function createRoom(catId) {
             roomCode = Math.floor(100000 + Math.random() * 900000).toString();
-            const pool = cat === 'variado' ? DATABASE : DATABASE.filter(e => e.group === cat);
-            const entities = pool.sort(() => 0.5 - Math.random()).slice(0, 12);
+            const pool = catId === 'variado' ? DATABASE : DATABASE.filter(e => e.g === catId);
+            // Tomamos 24 para que la cuadrícula del juego sea cómoda (4x6 o 3x8)
+            const entities = pool.sort(() => 0.5 - Math.random()).slice(0, 24);
 
             const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', roomCode);
             await setDoc(roomRef, {
-                code: roomCode, 
-                player1: currentUser.uid, 
-                p1_name: myNickname,
-                player2: null, 
-                p2_name: null,
-                entities, 
-                p1_secret: null, 
-                p2_secret: null, 
-                turn: currentUser.uid, 
-                lastQuestion: null, 
-                lastAnswer: null, 
-                winner: null
+                code: roomCode, p1: user.uid, p1_n: myNick, p2: null, p2_n: null,
+                entities, p1_s: null, p2_s: null, turn: user.uid,
+                lastQ: null, lastA: null, winner: null
             });
-            
             document.getElementById('room-code-text').innerText = roomCode;
-            document.getElementById('lobby-p1-name').innerText = myNickname;
+            document.getElementById('lobby-p1-name').innerText = myNick;
             window.navTo('screen-lobby');
-            listenToRoom(roomCode);
-        };
+            listenRoom(roomCode);
+        }
 
-        window.autoJoinCheck = (val) => { if(val.length === 6) window.handleJoin(val); };
+        window.autoJoinCheck = (v) => { if(v.length === 6) joinRoom(v); };
 
-        window.handleJoin = async (code) => {
-            const loader = document.getElementById('join-loading');
-            const error = document.getElementById('join-error');
-            loader.classList.remove('hidden');
-            error.classList.add('hidden');
-
-            const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', code);
+        async function joinRoom(c) {
+            document.getElementById('join-loading').classList.remove('hidden');
+            const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', c);
             const snap = await getDoc(roomRef);
-            
             if(snap.exists()) {
-                const data = snap.data();
-                if(!data.player2 || data.player2 === currentUser.uid) {
-                    await updateDoc(roomRef, { 
-                        player2: currentUser.uid,
-                        p2_name: myNickname 
-                    });
-                    roomCode = code;
-                    listenToRoom(code);
-                    window.navTo('screen-lobby'); // El que se une también va al lobby primero
-                } else { 
-                    error.innerText = "Sala Llena";
-                    error.classList.remove('hidden'); 
-                }
-            } else { 
-                error.innerText = "Código Incorrecto";
-                error.classList.remove('hidden'); 
-            }
-            loader.classList.add('hidden');
-        };
+                const d = snap.data();
+                if(!d.p2 || d.p2 === user.uid) {
+                    await updateDoc(roomRef, { p2: user.uid, p2_n: myNick });
+                    roomCode = c;
+                    listenRoom(c);
+                    window.navTo('screen-lobby');
+                } else { document.getElementById('join-error').classList.remove('hidden'); }
+            } else { document.getElementById('join-error').classList.remove('hidden'); }
+            document.getElementById('join-loading').classList.add('hidden');
+        }
 
-        function listenToRoom(code) {
-            const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', code);
+        function listenRoom(c) {
+            const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', c);
             onSnapshot(roomRef, (snap) => {
                 if(!snap.exists()) return;
-                const data = snap.data();
-                roomData = data;
+                const d = snap.data();
+                roomData = d;
+                const isP1 = user.uid === d.p1;
                 
-                const isP1 = currentUser.uid === data.player1;
-                
-                // Actualizar UI del Lobby con nombres reales
-                document.getElementById('lobby-p1-name').innerText = isP1 ? `${data.p1_name} (Tú)` : data.p1_name;
-                
-                if(data.player2) {
-                    const rivalSlot = document.getElementById('lobby-rival-slot');
-                    rivalSlot.className = "p-8 bg-slate-950 rounded-[3rem] border-2 border-indigo-500 flex flex-col items-center scale-105 shadow-2xl";
+                document.getElementById('lobby-p1-name').innerText = isP1 ? `${d.p1_n} (Tú)` : d.p1_n;
+                if(d.p2) {
+                    document.getElementById('lobby-rival-slot').className = "p-8 bg-slate-950 rounded-[3rem] border-2 border-emerald-500 flex flex-col items-center shadow-2xl";
                     document.getElementById('rival-icon-bg').className = "w-20 h-20 bg-emerald-500 rounded-3xl flex items-center justify-center mb-4 pulse-indigo text-white";
-                    document.getElementById('rival-name-display').innerText = isP1 ? data.p2_name : `${data.p2_name} (Tú)`;
+                    document.getElementById('rival-name-display').innerText = isP1 ? d.p2_n : `${d.p2_n} (Tú)`;
                     document.getElementById('rival-name-display').className = "font-bold text-white italic truncate w-full";
-                    document.getElementById('rival-role-label').innerText = "Rival Conectado";
+                    document.getElementById('rival-role-label').innerText = "CONECTADO";
                     document.getElementById('rival-role-label').className = "text-[10px] font-black uppercase text-emerald-400";
                     lucide.createIcons();
                 }
 
-                // Navegación de Flujo
-                const mySecret = isP1 ? data.p1_secret : data.p2_secret;
-
-                if(data.winner) {
-                    showResult(data.winner === currentUser.uid);
-                } else if(data.p1_secret && data.p2_secret) {
-                    renderGame(data);
+                const myS = isP1 ? d.p1_s : d.p2_s;
+                if(d.winner) {
+                    showResult(d.winner === user.uid);
+                } else if(d.p1_s && d.p2_s) {
+                    renderGame(d);
                     window.navTo('screen-game');
-                } else if(data.player2) {
-                    // Si ya hay rival, pasar a picking si no he elegido
-                    if(!mySecret) {
-                        renderPicking(data.entities);
+                } else if(d.p2) {
+                    if(!myS) {
+                        renderPicking(d.entities);
                         window.navTo('screen-picking');
-                    } else {
-                        document.getElementById('pick-waiting-overlay').classList.remove('hidden');
-                    }
+                    } else { document.getElementById('pick-waiting-overlay').classList.remove('hidden'); }
                 }
             });
         }
@@ -374,86 +422,84 @@
             grid.innerHTML = "";
             entities.forEach(item => {
                 const b = document.createElement('button');
-                b.className = "bg-white rounded-3xl p-6 shadow-lg flex flex-col items-center justify-center border-4 border-white active:scale-95 transition-all text-slate-800";
-                b.innerHTML = `<span class="text-4xl mb-2">${item.img}</span><span class="text-[9px] font-black uppercase text-center">${item.name}</span>`;
+                b.className = "bg-white rounded-3xl p-6 shadow-xl flex flex-col items-center justify-center border-4 border-white active:scale-95 transition-all text-slate-800";
+                b.innerHTML = `<span class="text-5xl mb-2">${item.i}</span><span class="text-[9px] font-black uppercase text-center leading-tight">${item.n}</span>`;
                 b.onclick = async () => {
                     const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', roomCode);
-                    const field = currentUser.uid === roomData.player1 ? 'p1_secret' : 'p2_secret';
+                    const field = user.uid === roomData.p1 ? 'p1_s' : 'p2_s';
                     await updateDoc(roomRef, { [field]: item.id });
                 };
                 grid.appendChild(b);
             });
         }
 
-        function renderGame(data) {
-            const isMyTurn = data.turn === currentUser.uid;
-            const mySecretId = currentUser.uid === data.player1 ? data.p1_secret : data.p2_secret;
-            const secret = data.entities.find(e => e.id === mySecretId);
+        function renderGame(d) {
+            const isMyTurn = d.turn === user.uid;
+            const mySId = user.uid === d.p1 ? d.p1_s : d.p2_s;
+            const sec = d.entities.find(e => e.id === mySId);
 
-            document.getElementById('turn-dot').className = isMyTurn ? "w-3 h-3 rounded-full bg-emerald-500 animate-ping" : "w-3 h-3 rounded-full bg-slate-300";
-            document.getElementById('turn-label').innerText = isMyTurn ? "Tu Turno" : "Turno Rival";
-            document.getElementById('identity-img').innerText = secret.img; // Como estamos en Test con Emojis
-            document.getElementById('identity-name').innerText = secret.name;
+            document.getElementById('turn-dot').className = isMyTurn ? "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" : "w-2.5 h-2.5 rounded-full bg-slate-300";
+            document.getElementById('turn-label').innerText = isMyTurn ? "TU TURNO" : "TURNO RIVAL";
+            document.getElementById('my-identity-emoji').innerText = sec.i;
+            document.getElementById('my-identity-name').innerText = sec.n;
 
             const box = document.getElementById('answer-panel');
-            if(data.lastQuestion && !data.lastAnswer && !isMyTurn) {
+            if(d.lastQ && !d.lastA && !isMyTurn) {
                 box.classList.remove('hidden');
-                document.getElementById('rival-q').innerText = `"${data.lastQuestion}"`;
+                document.getElementById('rival-q').innerText = `PREGUNTA: "${d.lastQ}"`;
+                if(!sidebarOpen && window.innerWidth < 1024) window.toggleSidebar();
             } else { box.classList.add('hidden'); }
 
             const grid = document.getElementById('game-grid');
             if(grid.children.length === 0) {
-                data.entities.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = "card-anim relative h-32 bg-white rounded-2xl shadow-sm flex flex-col items-center justify-center cursor-pointer border-2 border-white";
-                    card.innerHTML = `<span class="text-3xl">${item.img}</span><span class="text-[8px] font-black uppercase mt-1">${item.name}</span>`;
-                    card.onclick = () => card.classList.toggle('flipped');
-                    grid.appendChild(card);
+                d.entities.forEach(item => {
+                    const c = document.createElement('div');
+                    c.className = "h-36 bg-white rounded-2xl shadow-sm flex flex-col items-center justify-center cursor-pointer border-2 border-white transition-all";
+                    c.innerHTML = `<span class="text-4xl">${item.i}</span><span class="text-[8px] font-black uppercase mt-1 px-2 text-center leading-none">${item.n}</span>`;
+                    c.onclick = () => c.classList.toggle('flipped');
+                    grid.appendChild(c);
                 });
                 const sel = document.getElementById('resolve-select');
-                sel.innerHTML = '<option value="">¿QUIÉN ES EL PERSONAJE?</option>';
-                data.entities.forEach(e => { const o = document.createElement('option'); o.value = e.id; o.innerText = e.name; sel.appendChild(o); });
+                sel.innerHTML = '<option value="">¿QUIÉN ES EL RIVAL?</option>';
+                d.entities.forEach(e => { const o = document.createElement('option'); o.value = e.id; o.innerText = e.n; sel.appendChild(o); });
             }
 
-            if(data.lastQuestion && data.lastAnswer) {
-                const hist = document.getElementById('game-history');
-                if(!hist.firstChild || hist.firstChild.dataset.q !== data.lastQuestion) {
-                    const d = document.createElement('div');
-                    d.dataset.q = data.lastQuestion;
-                    d.className = "p-4 rounded-2xl bg-white border border-slate-200 shadow-sm";
-                    d.innerHTML = `<p class="text-[11px] font-bold text-slate-800">"${data.lastQuestion}"</p><p class="mt-1 text-indigo-600 font-black uppercase text-[9px]">${data.lastAnswer}</p>`;
-                    hist.prepend(d);
+            if(d.lastQ && d.lastA) {
+                const h = document.getElementById('game-history');
+                if(!h.firstChild || h.firstChild.dataset.q !== d.lastQ) {
+                    const div = document.createElement('div');
+                    div.dataset.q = d.lastQ;
+                    div.className = "p-3 bg-white rounded-2xl border shadow-sm text-slate-800 animate-fade-in";
+                    div.innerHTML = `<p class="font-bold leading-tight">"${d.lastQ}"</p><p class="mt-1 text-indigo-600 font-black uppercase text-[9px]">${d.lastA}</p>`;
+                    h.prepend(div);
                 }
             }
         }
 
-        window.sendAnswerAction = async (ans) => {
-            const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', roomCode);
-            await updateDoc(roomRef, { lastAnswer: ans });
+        window.sendAnswerAction = async (a) => {
+            await updateDoc(doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', roomCode), { lastA: a });
         };
 
         document.getElementById('q-input').onkeypress = async (e) => {
-            if(e.key === 'Enter' && e.target.value.trim() && roomData.turn === currentUser.uid) {
+            if(e.key === 'Enter' && e.target.value.trim() && roomData.turn === user.uid) {
                 const q = e.target.value; e.target.value = "";
-                const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', roomCode);
-                const next = currentUser.uid === roomData.player1 ? roomData.player2 : roomData.player1;
-                await updateDoc(roomRef, { lastQuestion: q, lastAnswer: null, turn: next });
+                const next = user.uid === roomData.p1 ? roomData.p2 : roomData.p1;
+                await updateDoc(doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', roomCode), { lastQ: q, lastA: null, turn: next });
             }
         };
 
-        window.handleResolve = async (guessId) => {
-            if(!guessId) return;
-            const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', roomCode);
-            const rivalSec = currentUser.uid === roomData.player1 ? roomData.p2_secret : roomData.p1_secret;
-            const winner = guessId === rivalSec ? currentUser.uid : (currentUser.uid === roomData.player1 ? roomData.player2 : roomData.player1);
-            await updateDoc(roomRef, { winner });
+        window.handleResolve = async (g) => {
+            if(!g) return;
+            const rS = user.uid === roomData.p1 ? roomData.p2_s : roomData.p1_s;
+            const win = g === rS ? user.uid : (user.uid === roomData.p1 ? roomData.p2 : roomData.p1);
+            await updateDoc(doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', roomCode), { winner: win });
         };
 
-        function showResult(win) {
+        function showResult(w) {
             window.navTo('screen-result');
-            const box = document.getElementById('result-box');
-            document.getElementById('result-text').innerText = win ? "¡VICTORIA!" : "¡DERROTA!";
-            box.className = `p-12 rounded-[5rem] text-center text-white shadow-2xl border-8 max-w-md w-full ${win?'bg-emerald-600 border-emerald-400':'bg-red-600 border-red-400'}`;
+            const b = document.getElementById('result-box');
+            document.getElementById('result-text').innerText = w ? "¡VICTORIA!" : "¡DERROTA!";
+            b.className = `p-12 rounded-[5rem] border-8 shadow-2xl max-w-sm w-full text-white ${w?'bg-emerald-600 border-emerald-400':'bg-red-600 border-red-400'}`;
         }
 
         window.copyRoomCode = () => {
