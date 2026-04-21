@@ -32,19 +32,19 @@
     <!-- PANTALLA DE CARGA -->
     <div id="screen-loading" class="fixed inset-0 flex flex-col items-center justify-center bg-slate-950 z-[100]">
         <div class="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-6"></div>
-        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500 text-center">Iniciando Servidores...</p>
+        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500 text-center">Sincronizando Multiverso...</p>
     </div>
 
     <!-- REGISTRO NICKNAME -->
     <div id="screen-auth" class="screen">
         <div class="text-center mb-12">
-            <h2 class="text-5xl font-black italic uppercase tracking-tighter">Tu <span class="text-indigo-500">Avatar</span></h2>
-            <p class="text-slate-500 font-bold uppercase text-[10px] mt-2 tracking-widest text-center">Identifícate ante el multiverso</p>
+            <h2 class="text-5xl font-black italic uppercase tracking-tighter">Pop<span class="text-indigo-500">Duel</span></h2>
+            <p class="text-slate-500 font-bold uppercase text-[10px] mt-2 tracking-widest text-center">Crea tu perfil de duelista</p>
         </div>
         <div class="w-full max-w-md bg-slate-900 p-8 rounded-[3rem] border-2 border-slate-800 shadow-2xl">
-            <input type="text" id="nickname-input" placeholder="Nombre de Guerrero..." maxlength="12" class="w-full bg-slate-950 border-2 border-slate-700 p-5 rounded-2xl text-center font-black uppercase text-2xl text-white outline-none focus:border-indigo-500 transition-all mb-6">
+            <input type="text" id="nickname-input" placeholder="Tu Nick..." maxlength="12" class="w-full bg-slate-950 border-2 border-slate-700 p-5 rounded-2xl text-center font-black uppercase text-2xl text-white outline-none focus:border-indigo-500 transition-all mb-6">
             <button onclick="window.saveNickname()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-5 rounded-2xl font-black uppercase shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3">
-                Entrar <i data-lucide="zap"></i>
+                Conectar <i data-lucide="zap"></i>
             </button>
         </div>
     </div>
@@ -53,14 +53,14 @@
     <div id="screen-home" class="screen">
         <div class="text-center mb-16">
             <h1 class="text-7xl md:text-9xl font-black italic tracking-tighter uppercase leading-none">Pop<span class="text-indigo-500">Duel</span></h1>
-            <p id="welcome-user" class="text-slate-500 font-bold uppercase tracking-[0.5em] text-[10px] mt-4 italic text-center">Sincronizando perfil...</p>
+            <p id="welcome-user" class="text-slate-500 font-bold uppercase tracking-[0.5em] text-[10px] mt-4 italic text-center italic">Cargando...</p>
         </div>
         <div class="max-w-md w-full space-y-6">
             <button onclick="window.navTo('screen-categories')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-8 rounded-[2.5rem] font-black uppercase text-xl shadow-2xl transition-all active:scale-95 flex items-center justify-center gap-4">
                 <i data-lucide="plus-circle" class="w-8 h-8"></i> Crear Sala
             </button>
             <button onclick="window.navTo('screen-join')" class="w-full bg-slate-900 border-2 border-slate-800 hover:border-indigo-500 text-white py-8 rounded-[2.5rem] font-black uppercase text-xl shadow-2xl transition-all active:scale-95 flex items-center justify-center gap-4">
-                <i data-lucide="users" class="w-8 h-8 text-indigo-500"></i> Unirse a Duelo
+                <i data-lucide="users" class="w-8 h-8 text-indigo-500"></i> Unirse
             </button>
         </div>
     </div>
@@ -77,13 +77,13 @@
         <button onclick="window.navTo('screen-home')" class="mb-8 text-slate-500 font-bold uppercase text-[10px] flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Volver</button>
         <div class="bg-slate-900 p-10 rounded-[4rem] border-2 border-slate-800 shadow-2xl w-full max-w-md text-center">
             <h2 class="text-2xl font-black uppercase mb-6 italic">Código de Sala</h2>
-            <div id="join-loading" class="hidden mb-4 animate-bounce text-indigo-400 font-black text-xs">BUSCANDO REALIDAD...</div>
-            <input type="number" id="join-input" maxlength="6" placeholder="000000" class="w-full bg-slate-950 border-2 border-slate-700 p-6 rounded-3xl text-center font-black text-5xl text-indigo-400 outline-none focus:border-indigo-500 tracking-[0.1em]" oninput="window.autoJoinCheck(this.value)">
-            <p id="join-error" class="text-red-400 text-[10px] font-bold mt-6 uppercase hidden">SALA NO DISPONIBLE</p>
+            <div id="join-loading" class="hidden mb-4 animate-bounce text-indigo-400 font-black text-xs uppercase">Buscando sala...</div>
+            <input type="number" id="join-input" maxlength="6" placeholder="000000" class="w-full bg-slate-950 border-2 border-slate-700 p-6 rounded-3xl text-center font-black text-5xl text-indigo-400 outline-none focus:border-indigo-500 transition-all tracking-[0.1em]" oninput="window.autoJoinCheck(this.value)">
+            <p id="join-error" class="text-red-400 text-[10px] font-bold mt-6 uppercase hidden">SALA NO ENCONTRADA</p>
         </div>
     </div>
 
-    <!-- LOBBY (HOST + RIVAL) -->
+    <!-- LOBBY -->
     <div id="screen-lobby" class="screen bg-slate-950">
         <div class="bg-slate-900 border-2 border-slate-800 w-full max-w-2xl rounded-[4rem] p-8 md:p-12 shadow-2xl text-center">
             <h2 class="text-3xl font-black italic uppercase mb-10 tracking-widest text-center">Lobby de Duelo</h2>
@@ -95,14 +95,14 @@
                 </div>
                 <div id="lobby-rival-slot" class="p-8 bg-slate-950/40 rounded-[3rem] border-2 border-dashed border-slate-700 flex flex-col items-center transition-all duration-500">
                     <div id="rival-icon-bg" class="w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center mb-4 text-slate-600"><i data-lucide="user-plus" class="w-10 h-10"></i></div>
-                    <h3 id="rival-name-display" class="font-bold text-slate-600 italic truncate w-full uppercase">Buscando...</h3>
+                    <h3 id="rival-name-display" class="font-bold text-slate-600 italic truncate w-full uppercase">Esperando...</h3>
                 </div>
             </div>
 
-            <!-- BOTÓN DE INICIO (Visible solo para Host cuando hay rival) -->
+            <!-- BOTÓN DE INICIO -->
             <div id="start-game-box" class="hidden mb-10">
                 <button onclick="window.startGameAction()" class="w-full bg-emerald-500 hover:bg-emerald-400 p-6 rounded-[2.5rem] font-black uppercase text-xl shadow-2xl shadow-emerald-500/20 active:scale-95 transition-all flex items-center justify-center gap-4">
-                    ¡EMPEZAR DUELO! <i data-lucide="sword"></i>
+                    ¡EMPEZAR DUELO! <i data-lucide="play-circle"></i>
                 </button>
             </div>
 
@@ -111,21 +111,21 @@
             </div>
 
             <div class="bg-slate-950 p-8 rounded-3xl mb-8">
-                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 text-center">Comparte este código con tu rival</p>
+                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 text-center">Código de Sala</p>
                 <span id="room-code-text" class="text-6xl font-black text-indigo-400 tracking-[0.1em]">------</span>
             </div>
-            <button onclick="location.reload()" class="text-slate-600 font-bold text-xs uppercase hover:text-red-400 tracking-widest transition-colors">Abandonar Partida</button>
+            <button onclick="location.reload()" class="text-slate-600 font-bold text-xs uppercase hover:text-red-400 tracking-widest transition-colors">Cancelar</button>
         </div>
     </div>
 
-    <!-- PICKING PERSONAJE -->
+    <!-- PICKING -->
     <div id="screen-picking" class="screen bg-slate-50 !justify-start pt-12 text-slate-900">
         <h2 class="text-5xl font-black italic uppercase tracking-tighter mb-2 text-center w-full">Tu Secreto</h2>
-        <p class="text-slate-400 font-bold uppercase text-[10px] text-center w-full mb-12 tracking-widest">Elige quién quieres ser en esta ronda</p>
-        <div id="pick-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 w-full max-w-7xl px-4 pb-24"></div>
+        <p class="text-slate-400 font-bold uppercase text-[10px] text-center w-full mb-12 tracking-widest">No dejes que el rival vea esto</p>
+        <div id="pick-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 w-full max-w-7xl px-4 pb-24 text-center"></div>
         <div id="pick-waiting-overlay" class="hidden fixed inset-0 bg-indigo-600/95 flex flex-col items-center justify-center z-50 text-white">
             <div class="w-20 h-20 border-8 border-white border-t-transparent rounded-full animate-spin mb-8"></div>
-            <h2 class="text-4xl font-black italic uppercase px-6 text-center">Esperando al otro jugador...</h2>
+            <h2 class="text-4xl font-black italic uppercase px-6 text-center">Esperando al oponente...</h2>
         </div>
     </div>
 
@@ -143,39 +143,37 @@
             <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3 pb-32"></div>
         </div>
 
-        <!-- BOTÓN CHAT -->
         <button id="toggle-sidebar" onclick="window.toggleSidebar()" class="fixed bottom-6 right-6 w-16 h-16 bg-indigo-600 text-white rounded-full shadow-2xl flex items-center justify-center z-[60] pulse-indigo lg:hidden">
-            <i data-lucide="message-circle" id="sidebar-icon"></i>
+            <i data-lucide="message-square" id="sidebar-icon"></i>
         </button>
 
-        <!-- PANEL DE CONTROL -->
         <div id="game-sidebar" class="sidebar-closed lg:translate-x-0 fixed lg:relative inset-x-0 bottom-0 lg:bottom-auto h-[75vh] lg:h-screen w-full lg:w-[28rem] bg-white border-t lg:border-t-0 lg:border-l p-6 flex flex-col shadow-2xl lg:shadow-none">
             
             <div class="mb-6 bg-slate-900 p-5 rounded-[2.5rem] text-white border-b-4 border-indigo-500 flex items-center gap-4 shadow-xl">
                 <div id="my-identity-emoji" class="text-4xl p-2 bg-white/10 rounded-2xl">❓</div>
                 <div class="overflow-hidden flex-grow">
-                    <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Tu Identidad Secreta</p>
+                    <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Eres:</p>
                     <h3 id="my-identity-name" class="font-black text-lg uppercase truncate italic">---</h3>
                 </div>
-                <button onclick="window.toggleSidebar()" class="lg:hidden p-2 text-white/30 hover:text-white transition-colors"><i data-lucide="chevron-down"></i></button>
+                <button onclick="window.toggleSidebar()" class="lg:hidden p-2 text-white/30 hover:text-white"><i data-lucide="chevron-down"></i></button>
             </div>
 
             <div id="answer-panel" class="hidden mb-6 bg-yellow-400 p-6 rounded-[2.5rem] text-black shadow-xl animate-bounce">
                 <p id="rival-q" class="text-sm font-black italic mb-4 text-center">"..."</p>
                 <div class="flex gap-3">
-                    <button onclick="window.sendAnswerAction('SÍ')" class="flex-1 bg-black text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg">SÍ</button>
-                    <button onclick="window.sendAnswerAction('NO')" class="flex-1 bg-white border-2 border-black/10 text-black py-4 rounded-2xl font-black text-xs uppercase shadow-lg">NO</button>
+                    <button onclick="window.sendAnswerAction('SÍ')" class="flex-1 bg-black text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg transition-all active:scale-95">SÍ</button>
+                    <button onclick="window.sendAnswerAction('NO')" class="flex-1 bg-white border-2 border-black/10 text-black py-4 rounded-2xl font-black text-xs uppercase shadow-lg transition-all active:scale-95">NO</button>
                 </div>
             </div>
 
-            <p class="text-[10px] font-black text-slate-300 uppercase mb-2 ml-1 tracking-widest">Historial Multiverso</p>
+            <p class="text-[10px] font-black text-slate-300 uppercase mb-2 ml-1 tracking-widest uppercase">Historial del Duelo</p>
             <div id="game-history" class="flex-grow overflow-y-auto mb-4 space-y-2 pr-1 custom-scrollbar"></div>
 
             <div class="mt-auto space-y-3">
-                <input type="text" id="q-input" placeholder="Escribe tu pregunta..." class="w-full bg-slate-100 p-5 rounded-2xl text-xs font-bold outline-none border-2 border-transparent focus:border-indigo-500 text-slate-800 transition-all shadow-inner">
+                <input type="text" id="q-input" placeholder="Haz tu pregunta..." class="w-full bg-slate-100 p-5 rounded-2xl text-xs font-bold outline-none border-2 border-transparent focus:border-indigo-500 text-slate-800 transition-all shadow-inner">
                 <div class="bg-slate-900 p-3 rounded-2xl border-b-4 border-indigo-500 shadow-lg">
                     <select id="resolve-select" onchange="window.handleResolve(this.value)" class="w-full bg-slate-900 text-white p-2 text-[10px] font-black uppercase outline-none cursor-pointer">
-                        <option value="">¿QUIÉN ES EL RIVAL?</option>
+                        <option value="">¿ADIVINAR PERSONAJE?</option>
                     </select>
                 </div>
             </div>
@@ -186,7 +184,7 @@
     <div id="screen-result" class="hidden fixed inset-0 bg-slate-950/98 flex flex-col items-center justify-center z-[200] p-6 text-center backdrop-blur-xl">
         <div id="result-box" class="p-12 rounded-[5rem] border-8 shadow-2xl max-w-sm w-full transition-all text-white">
             <h2 id="result-text" class="text-7xl font-black italic mb-8 uppercase tracking-tighter">VICTORIA</h2>
-            <button onclick="location.reload()" class="bg-white text-slate-900 px-12 py-5 rounded-2xl font-black uppercase text-sm w-full shadow-2xl">Volver al Menú</button>
+            <button onclick="location.reload()" class="bg-white text-slate-900 px-12 py-5 rounded-2xl font-black uppercase text-sm w-full shadow-2xl">Volver al Inicio</button>
         </div>
     </div>
 
@@ -195,7 +193,6 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIGURACIÓN (Tus credenciales)
         const firebaseConfig = {
             apiKey: "AIzaSyBBe77umMs5vu5zq1Xr9YkJzH27a-sZdsc",
             authDomain: "quien-es-quien-8edf0.firebaseapp.com",
@@ -208,9 +205,9 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appIdPrefix = "pop-duel-v160"; // Versión mejorada
+        const appIdPrefix = "pop-duel-v170"; // Actualizado
 
-        // DATABASE MASIVA (60+ por categoría)
+        // DATABASE MASIVA (61 por categoría)
         const DATABASE = [
             // FICCIÓN (61)
             {id:"f1",n:"Mario",g:"ficcion",i:"🍄"},{id:"f2",n:"Goku",g:"ficcion",i:"🥋"},{id:"f3",n:"Spider-Man",g:"ficcion",i:"🕷️"},
@@ -229,13 +226,13 @@
             {id:"f40",n:"Flash",g:"ficcion",i:"🏃"},{id:"f41",n:"Ben 10",g:"ficcion",i:"⌚"},{id:"f42",n:"Rigby",g:"ficcion",i:"🦝"},
             {id:"f43",n:"Mordecai",g:"ficcion",i:"🐦"},{id:"f44",n:"Finn",g:"ficcion",i:"🗡️"},{id:"f45",n:"Jake",g:"ficcion",i:"🐶"},
             {id:"f46",n:"Gumball",g:"ficcion",i:"🐱"},{id:"f47",n:"Darwin",g:"ficcion",i:"🐟"},{id:"f48",n:"Rick",g:"ficcion",i:"🧪"},
-            {id:"f49",n:"Morty",g:"ficcion",i:"🌀"},{id:"f50",n:"Bender",g:"ficcion",i:"🤖"},{id:"f51",n:"Stitch",g:"ficcion",i:"🛸"},
-            {id:"f52",n:"Wall-E",g:"ficcion",i:"🔋"},{id:"f53",n:"Mulan",g:"ficcion",i:"🎎"},{id:"f54",n:"Ash Ketchum",g:"ficcion",i:"🧢"},
-            {id:"f55",n:"Saske",g:"ficcion",i:"👁️‍🗨️"},{id:"f56",n:"Light Yagami",g:"ficcion",i:"📓"},{id:"f57",n:"L",g:"ficcion",i:"🍰"},
-            {id:"f58",n:"Katniss",g:"ficcion",i:"🔥"},{id:"f59",n:"Lara Croft",g:"ficcion",i:"🏹"},{id:"f60",n:"Kratos",g:"ficcion",i:"🪓"},
-            {id:"f61",n:"Zelda",g:"ficcion",i:"👑"},
+            {id:"f49",n:"Morty",g:"ficcion",i:"🌀"},{id:"f50",n:"Bender",g:"ficcion",i:"🤖"},{id:"f51",n:"Wall-E",g:"ficcion",i:"🔋"},
+            {id:"f52",n:"Mulan",g:"ficcion",i:"🎎"},{id:"f53",n:"Ash",g:"ficcion",i:"🧢"},{id:"f54",n:"Saske",g:"ficcion",i:"👁️"},
+            {id:"f55",n:"Lara Croft",g:"ficcion",i:"🏹"},{id:"f56",n:"Kratos",g:"ficcion",i:"🪓"},{id:"f57",n:"Zelda",g:"ficcion",i:"👑"},
+            {id:"f58",n:"Po",g:"ficcion",i:"🐼"},{id:"f59",n:"Simba",g:"ficcion",i:"🐈"},{id:"f60",n:"Elmo",g:"ficcion",i:"🧶"},
+            {id:"f61",n:"Woody",g:"ficcion",i:"👢"},
 
-            // MARCAS (60)
+            // MARCAS (60+)
             {id:"m1",n:"Coca-Cola",g:"marcas",i:"🥤"},{id:"m2",n:"Apple",g:"marcas",i:"🍎"},{id:"m3",n:"Nike",g:"marcas",i:"👟"},
             {id:"m4",n:"Pepsi",g:"marcas",i:"🔵"},{id:"m5",n:"Amazon",g:"marcas",i:"📦"},{id:"m6",n:"Google",g:"marcas",i:"🔍"},
             {id:"m7",n:"Netflix",g:"marcas",i:"📺"},{id:"m8",n:"McDonalds",g:"marcas",i:"🍔"},{id:"m9",n:"Tesla",g:"marcas",i:"⚡"},
@@ -254,8 +251,8 @@
             {id:"m46",n:"Gucci",g:"marcas",i:"🕶️"},{id:"m47",n:"Toyota",g:"marcas",i:"🚜"},{id:"m48",n:"Zoom",g:"marcas",i:"📹"},
             {id:"m49",n:"Discord",g:"marcas",i:"👾"},{id:"m50",n:"Nestlé",g:"marcas",i:"🍫"},{id:"m51",n:"Warner",g:"marcas",i:"🎥"},
             {id:"m52",n:"PlayStation",g:"marcas",i:"🎮"},{id:"m53",n:"Lidl",g:"marcas",i:"🛒"},{id:"m54",n:"Oreo",g:"marcas",i:"🍪"},
-            {id:"m55",n:"KitKat",g:"marcas",i:"🍫"},{id:"m56",n:"Nvidia",g:"marcas",i:"🟢"},{id:"m57",n:"Rolex",g:"marcas",i:"🤴"},
-            {id:"m58",n:"Vans",g:"marcas",i:"🛹"},{id:"m59",n:"Puma",g:"marcas",i:"🐆"},{id:"m60",n:"Pringles",g:"marcas",i:"🥔"},
+            {id:"m55",n:"KitKat",g:"marcas",i:"🍫"},{id:"m56",n:"Nvidia",g:"marcas",i:"🟢"},{id:"m57",n:"Vans",g:"marcas",i:"🛹"},
+            {id:"m58",n:"Puma",g:"marcas",i:"🐆"},{id:"m59",n:"Pringles",g:"marcas",i:"🥔"},{id:"m60",n:"Ford",g:"marcas",i:"🚙"},{id:"m61",n:"Canon",g:"marcas",i:"📷"},
 
             // FAMOSOS (61)
             {id:"e1",n:"Messi",g:"famosos",i:"⚽"},{id:"e2",n:"CR7",g:"famosos",i:"🇵🇹"},{id:"e3",n:"Elon Musk",g:"famosos",i:"🚀"},
@@ -264,11 +261,11 @@
             {id:"e10",n:"Will Smith",g:"famosos",i:"🧤"},{id:"e11",n:"Shakira",g:"famosos",i:"🐺"},{id:"e12",n:"Rihanna",g:"famosos",i:"🌂"},
             {id:"e13",n:"Beyonce",g:"famosos",i:"🐝"},{id:"e14",n:"Bad Bunny",g:"famosos",i:"🐰"},{id:"e15",n:"Einstein",g:"famosos",i:"🧠"},
             {id:"e16",n:"Steve Jobs",g:"famosos",i:"🍏"},{id:"e17",n:"Drake",g:"famosos",i:"🦉"},{id:"e18",n:"LeBron James",g:"famosos",i:"👑"},
-            {id:"e19",n:"Jordan",g:"famosos",i:"🏀"},{id:"e20",n:"Kim Kardashian",g:"famosos",i:"💎"},{id:"e21",n:"Ariana Grande",g:"famosos",i:"🍩"},
+            {id:"e19",n:"Jordan",g:"famosos",i:"🏀"},{id:"e20",n:"Kim K",g:"famosos",i:"💎"},{id:"e21",n:"Ariana G",g:"famosos",i:"🍩"},
             {id:"e22",n:"Tom Cruise",g:"famosos",i:"🏍️"},{id:"e23",n:"Ed Sheeran",g:"famosos",i:"🎸"},{id:"e24",n:"Eminem",g:"famosos",i:"🍫"},
-            {id:"e25",n:"Jackie Chan",g:"famosos",i:"🥋"},{id:"e26",n:"Stan Lee",g:"famosos",i:"🦸"},{id:"e27",n:"Michael Jackson",g:"famosos",i:"🕺"},
-            {id:"e28",n:"Mercury",g:"famosos",i:"👑"},{id:"e29",n:"Marilyn Monroe",g:"famosos",i:"💋"},{id:"e30",n:"Bruce Lee",g:"famosos",i:"🐉"},
-            {id:"e31",n:"Stephen Hawking",g:"famosos",i:"🌌"},{id:"e32",n:"DiCaprio",g:"famosos",i:"🚢"},{id:"e33",n:"Robert Downey",g:"famosos",i:"🦾"},
+            {id:"e25",n:"Jackie Chan",g:"famosos",i:"🥋"},{id:"e26",n:"Stan Lee",g:"famosos",i:"🦸"},{id:"e27",n:"Jackson",g:"famosos",i:"🕺"},
+            {id:"e28",n:"Mercury",g:"famosos",i:"👑"},{id:"e29",n:"Monroe",g:"famosos",i:"💋"},{id:"e30",n:"Bruce Lee",g:"famosos",i:"🐉"},
+            {id:"e31",n:"Hawking",g:"famosos",i:"🌌"},{id:"e32",n:"DiCaprio",g:"famosos",i:"🚢"},{id:"e33",n:"RDJ",g:"famosos",i:"🦾"},
             {id:"e34",n:"Brad Pitt",g:"famosos",i:"🎬"},{id:"e35",n:"Kanye West",g:"famosos",i:"🐻"},{id:"e36",n:"Selena Gomez",g:"famosos",i:"💖"},
             {id:"e37",n:"Oprah",g:"famosos",i:"📺"},{id:"e38",n:"PewDiePie",g:"famosos",i:"👊"},{id:"e39",n:"Lady Gaga",g:"famosos",i:"🎹"},
             {id:"e40",n:"Margot Robbie",g:"famosos",i:"🎀"},{id:"e41",n:"Bruno Mars",g:"famosos",i:"🕺"},{id:"e42",n:"Gordon Ramsay",g:"famosos",i:"🔪"},
@@ -276,7 +273,7 @@
             {id:"e46",n:"AuronPlay",g:"famosos",i:"📞"},{id:"e47",n:"Rubius",g:"famosos",i:"🐾"},{id:"e48",n:"Checo Perez",g:"famosos",i:"🏎️"},
             {id:"e49",n:"Canelo",g:"famosos",i:"🥊"},{id:"e50",n:"Usain Bolt",g:"famosos",i:"⚡"},{id:"e51",n:"Khabib",g:"famosos",i:"🦅"},
             {id:"e52",n:"Mike Tyson",g:"famosos",i:"🥊"},{id:"e53",n:"Stephen King",g:"famosos",i:"📚"},{id:"e54",n:"JK Rowling",g:"famosos",i:"🧙‍♀️"},
-            {id:"e55",n:"Dalai Lama",g:"famosos",i:"🧘"},{id:"e56",n:"Malala",g:"famosos",i:"📚"},{id:"e57",n:"Nelson Mandela",g:"famosos",i:"🇿🇦"},
+            {id:"e55",n:"Dalai Lama",g:"famosos",i:"🧘"},{id:"e56",n:"Malala",g:"famosos",i:"📚"},{id:"e57",n:"Mandela",g:"famosos",i:"🇿🇦"},
             {id:"e58",n:"Picasso",g:"famosos",i:"🖼️"},{id:"e59",n:"Van Gogh",g:"famosos",i:"🎨"},{id:"e60",n:"Beethoven",g:"famosos",i:"🎼"},
             {id:"e61",n:"Julio Cesar",g:"famosos",i:"🏛️"}
         ];
@@ -335,10 +332,10 @@
         function initCategories() {
             const grid = document.getElementById('cat-grid');
             const cats = [
-                {id:'variado', n:'Variado', d:'Caos Multiversal'},
-                {id:'ficcion', n:'Ficción', d:'Anime, Cine y Más'},
-                {id:'marcas', n:'Marcas', d:'Logos Mundiales'},
-                {id:'famosos', n:'Famosos', d:'Gente Real'}
+                {id:'ficcion', n:'Ficción', d:'Anime y Cine'},
+                {id:'marcas', n:'Marcas', d:'Logos Globales'},
+                {id:'famosos', n:'Famosos', d:'Gente Real'},
+                {id:'variado', n:'Variado', d:'Mezcla Total'}
             ];
             grid.innerHTML = "";
             cats.forEach(c => {
@@ -399,17 +396,19 @@
                 roomData = d;
                 const isP1 = user.uid === d.p1;
                 
-                // Lobby UI
+                // Actualizar Lobby Names
                 document.getElementById('lobby-p1-name').innerText = isP1 ? `${d.p1_n} (Tú)` : d.p1_n;
+                
                 if(d.p2) {
-                    document.getElementById('lobby-rival-slot').className = "p-8 bg-slate-950 rounded-[3rem] border-2 border-emerald-500 flex flex-col items-center shadow-2xl";
+                    document.getElementById('lobby-rival-slot').className = "p-8 bg-slate-950 rounded-[3rem] border-2 border-emerald-500 flex flex-col items-center shadow-2xl scale-105";
                     document.getElementById('rival-icon-bg').className = "w-20 h-20 bg-emerald-500 rounded-3xl flex items-center justify-center mb-4 pulse-indigo text-white";
                     document.getElementById('rival-name-display').innerText = isP1 ? d.p2_n : `${d.p2_n} (Tú)`;
-                    document.getElementById('rival-name-display').className = "font-bold text-white italic truncate w-full uppercase";
-                    document.getElementById('rival-role-label').innerText = "RIVAL LISTO";
+                    document.getElementById('rival-name-display').classList.replace('text-slate-600', 'text-white');
+                    document.getElementById('rival-role-label').innerText = "CONECTADO";
                     document.getElementById('rival-role-label').className = "text-[10px] font-black uppercase text-emerald-400";
                     lucide.createIcons();
 
+                    // Mostrar/Ocultar Botón de Inicio
                     if(isP1) {
                         document.getElementById('start-game-box').classList.remove('hidden');
                         document.getElementById('wait-host-msg').classList.add('hidden');
@@ -419,7 +418,7 @@
                     }
                 }
 
-                // Status Engine
+                // Status Logic
                 if(d.winner) {
                     showResult(d.winner === user.uid);
                 } else if(d.status === 'playing') {
@@ -470,6 +469,7 @@
             if(d.lastQ && !d.lastA && !isMyTurn) {
                 box.classList.remove('hidden');
                 document.getElementById('rival-q').innerText = `RIVAL: "${d.lastQ}"`;
+                if(!sidebarOpen && window.innerWidth < 1024) window.toggleSidebar();
             } else { box.classList.add('hidden'); }
 
             const grid = document.getElementById('game-grid');
@@ -491,7 +491,7 @@
                 if(!hist.firstChild || hist.firstChild.dataset.q !== d.lastQ) {
                     const div = document.createElement('div');
                     div.dataset.q = d.lastQ;
-                    div.className = "p-3 bg-white rounded-2xl border shadow-sm text-slate-800 animate-fade-in";
+                    div.className = "p-3 bg-white rounded-2xl border shadow-sm text-slate-800";
                     div.innerHTML = `<p class="font-bold leading-tight">"${d.lastQ}"</p><p class="mt-1 text-indigo-600 font-black uppercase text-[9px]">${d.lastA}</p>`;
                     hist.prepend(div);
                 }
@@ -521,7 +521,7 @@
             window.navTo('screen-result');
             const b = document.getElementById('result-box');
             document.getElementById('result-text').innerText = w ? "¡VICTORIA!" : "¡DERROTA!";
-            b.className = `p-12 rounded-[5rem] border-8 shadow-2xl max-w-sm w-full text-white ${w?'bg-emerald-600 border-emerald-400':'bg-red-600 border-red-400'}`;
+            b.className = `p-12 rounded-[5rem] border-8 shadow-2xl max-w-sm w-full ${w?'bg-emerald-600 border-emerald-400 text-white':'bg-red-600 border-red-400 text-white'}`;
         }
 
         window.copyRoomCode = () => {
@@ -533,3 +533,5 @@
     </script>
 </body>
 </html>
+
+
