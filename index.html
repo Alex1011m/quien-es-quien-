@@ -13,11 +13,11 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 20px; }
         .flipped { opacity: 0.05; filter: grayscale(1) blur(8px); transform: scale(0.9); pointer-events: none; }
-        .player-slot { transition: all 0.4s ease; }
         .pulse-indigo { animation: pulse-indigo 2s infinite; }
         @keyframes pulse-indigo { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
         .screen { display: none; min-height: 100vh; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; }
         .screen.active { display: flex; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
 <body class="select-none overflow-x-hidden">
@@ -25,14 +25,28 @@
     <!-- PANTALLA DE CARGA -->
     <div id="screen-loading" class="fixed inset-0 flex flex-col items-center justify-center bg-slate-950 z-[100]">
         <div class="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-6"></div>
-        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">Iniciando Servidores...</p>
+        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">Sincronizando Multiverso...</p>
     </div>
 
-    <!-- HOME: DOS BOTONES -->
+    <!-- PANTALLA DE REGISTRO (NICKNAME) -->
+    <div id="screen-auth" class="screen">
+        <div class="text-center mb-12">
+            <h2 class="text-5xl font-black italic uppercase tracking-tighter">Tu <span class="text-indigo-500">Avatar</span></h2>
+            <p class="text-slate-500 font-bold uppercase text-[10px] tracking-widest mt-2">¿Cómo te conocerán en el duelo?</p>
+        </div>
+        <div class="w-full max-w-md bg-slate-900 p-8 rounded-[3rem] border-2 border-slate-800 shadow-2xl">
+            <input type="text" id="nickname-input" placeholder="Escribe tu Nick..." maxlength="12" class="w-full bg-slate-950 border-2 border-slate-700 p-5 rounded-2xl text-center font-black uppercase text-2xl text-white outline-none focus:border-indigo-500 transition-all mb-6">
+            <button onclick="window.saveNickname()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-5 rounded-2xl font-black uppercase shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3">
+                Entrar al Multiverso <i data-lucide="chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- HOME -->
     <div id="screen-home" class="screen">
         <div class="text-center mb-16">
             <h1 class="text-7xl md:text-9xl font-black italic tracking-tighter uppercase leading-none">Pop<span class="text-indigo-500">Duel</span></h1>
-            <p class="text-slate-500 font-bold uppercase tracking-[0.5em] text-[10px] mt-2">Multiverse Online</p>
+            <p id="welcome-user" class="text-slate-500 font-bold uppercase tracking-[0.5em] text-[10px] mt-2">Bienvenido, Guerrero</p>
         </div>
         <div class="max-w-md w-full space-y-6">
             <button onclick="window.navTo('screen-categories')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-8 rounded-[2.5rem] font-black uppercase text-xl shadow-2xl transition-all active:scale-95 flex items-center justify-center gap-4">
@@ -50,42 +64,46 @@
             <button onclick="window.navTo('screen-home')" class="text-slate-500 font-bold uppercase text-[10px] tracking-widest mb-4 hover:text-white flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Volver</button>
             <h2 class="text-4xl font-black italic uppercase tracking-tighter">Selecciona un Mundo</h2>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full" id="cat-grid">
-            <!-- Botones inyectados -->
-        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full" id="cat-grid"></div>
     </div>
 
-    <!-- UNIRSE (INPUT 6 DÍGITOS) -->
+    <!-- UNIRSE -->
     <div id="screen-join" class="screen">
         <div class="text-center mb-10">
             <button onclick="window.navTo('screen-home')" class="text-slate-500 font-bold uppercase text-[10px] tracking-widest mb-4 hover:text-white flex items-center gap-2 mx-auto"><i data-lucide="arrow-left" class="w-4 h-4"></i> Volver</button>
             <h2 class="text-4xl font-black italic uppercase tracking-tighter">Introduce el Código</h2>
         </div>
         <div class="bg-slate-900 p-10 rounded-[4rem] border-2 border-slate-800 shadow-2xl w-full max-w-md">
-            <input type="text" id="join-input" maxlength="6" placeholder="000000" class="w-full bg-slate-950 border-2 border-slate-700 p-6 rounded-3xl text-center font-black uppercase text-5xl text-indigo-400 outline-none focus:border-indigo-500 transition-all tracking-[0.2em]" oninput="window.autoJoinCheck(this.value)">
-            <p id="join-error" class="text-red-400 text-[10px] font-bold text-center mt-6 uppercase tracking-widest hidden">Sala no encontrada</p>
+            <div id="join-loading" class="hidden mb-6 flex flex-col items-center">
+                <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-2"></div>
+                <p class="text-[8px] font-black uppercase text-indigo-400">Buscando sala...</p>
+            </div>
+            <input type="number" id="join-input" maxlength="6" placeholder="000000" class="w-full bg-slate-950 border-2 border-slate-700 p-6 rounded-3xl text-center font-black uppercase text-5xl text-indigo-400 outline-none focus:border-indigo-500 transition-all tracking-[0.2em]" oninput="window.autoJoinCheck(this.value)">
+            <p id="join-error" class="text-red-400 text-[10px] font-bold text-center mt-6 uppercase tracking-widest hidden">Sala no encontrada o llena</p>
         </div>
     </div>
 
-    <!-- LOBBY (HOST + RIVAL) -->
+    <!-- LOBBY -->
     <div id="screen-lobby" class="screen bg-slate-950/80 backdrop-blur-xl">
         <div class="bg-slate-900 border-2 border-slate-800 w-full max-w-2xl rounded-[4rem] p-8 md:p-12 shadow-2xl text-center">
             <h2 class="text-3xl font-black italic uppercase mb-10">Sala de Espera</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <!-- HOST -->
                 <div class="p-8 bg-slate-950 rounded-[3rem] border-2 border-indigo-500 flex flex-col items-center">
                     <div class="w-20 h-20 bg-indigo-500 rounded-3xl flex items-center justify-center mb-4 pulse-indigo">
                         <i data-lucide="crown" class="text-white w-10 h-10"></i>
                     </div>
                     <p class="text-[10px] font-black uppercase text-indigo-400">Anfitrión</p>
-                    <h3 class="font-bold text-white italic">Tú</h3>
+                    <h3 id="lobby-p1-name" class="font-bold text-white italic truncate w-full">Tú</h3>
                 </div>
-                <div id="lobby-rival-slot" class="p-8 bg-slate-950/40 rounded-[3rem] border-2 border-dashed border-slate-700 flex flex-col items-center">
+                <!-- RIVAL -->
+                <div id="lobby-rival-slot" class="p-8 bg-slate-950/40 rounded-[3rem] border-2 border-dashed border-slate-700 flex flex-col items-center transition-all duration-500">
                     <div id="rival-icon-bg" class="w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center mb-4">
                         <i data-lucide="user-plus" id="rival-icon" class="text-slate-600 w-10 h-10"></i>
                     </div>
-                    <p class="text-[10px] font-black uppercase text-slate-500">Rival</p>
-                    <h3 id="rival-name-display" class="font-bold text-slate-600 italic">Esperando...</h3>
+                    <p id="rival-role-label" class="text-[10px] font-black uppercase text-slate-500">Rival</p>
+                    <h3 id="rival-name-display" class="font-bold text-slate-600 italic truncate w-full">Esperando...</h3>
                 </div>
             </div>
 
@@ -101,13 +119,13 @@
     </div>
 
     <!-- SELECCIÓN SECRETA -->
-    <div id="screen-picking" class="screen bg-slate-50 !justify-start pt-12">
-        <h2 class="text-5xl font-black italic text-slate-900 uppercase tracking-tighter mb-2">Tu Secreto</h2>
+    <div id="screen-picking" class="screen bg-slate-50 !justify-start pt-12 text-slate-900">
+        <h2 class="text-5xl font-black italic uppercase tracking-tighter mb-2">Tu Secreto</h2>
         <p class="text-slate-400 font-bold uppercase text-[10px] tracking-widest mb-12">No dejes que el rival lo vea</p>
         <div id="pick-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4 max-w-6xl w-full"></div>
-        <div id="pick-waiting-overlay" class="hidden fixed inset-0 bg-indigo-600/90 flex flex-col items-center justify-center z-50">
+        <div id="pick-waiting-overlay" class="hidden fixed inset-0 bg-indigo-600/90 flex flex-col items-center justify-center z-50 text-white">
             <div class="w-20 h-20 border-8 border-white border-t-transparent rounded-full animate-spin mb-8"></div>
-            <h2 class="text-4xl font-black italic text-white uppercase">El rival está eligiendo...</h2>
+            <h2 class="text-4xl font-black italic uppercase text-center px-6">El rival está eligiendo...</h2>
         </div>
     </div>
 
@@ -118,7 +136,7 @@
                 <button onclick="location.reload()" class="text-slate-400 font-black text-[10px] uppercase flex items-center gap-2 hover:text-red-500"><i data-lucide="log-out" class="w-4 h-4"></i> Salir</button>
                 <div class="flex items-center gap-4 px-6 py-2 rounded-full bg-slate-50 border">
                     <div id="turn-dot" class="w-3 h-3 rounded-full bg-slate-300"></div>
-                    <span id="turn-label" class="font-black uppercase text-[11px] tracking-widest">Cargando...</span>
+                    <span id="turn-label" class="font-black uppercase text-[11px] tracking-widest text-slate-500">Espere...</span>
                 </div>
             </div>
             <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 pb-24"></div>
@@ -126,10 +144,13 @@
 
         <div class="w-full lg:w-[24rem] bg-white border-l p-6 flex flex-col shadow-2xl h-screen">
             <div class="mb-6 bg-slate-900 p-5 rounded-[2.5rem] text-white flex items-center gap-5 border-b-8 border-indigo-500 shadow-xl">
-                <img id="identity-img" src="" class="w-16 h-16 rounded-2xl object-cover border-2 border-white/20">
-                <h3 id="identity-name" class="text-xl font-black italic uppercase truncate">---</h3>
+                <img id="identity-img" src="" class="w-16 h-16 rounded-2xl object-cover border-2 border-white/20 bg-slate-800">
+                <div class="overflow-hidden">
+                    <p class="text-[8px] font-black uppercase text-indigo-400">Eres:</p>
+                    <h3 id="identity-name" class="text-xl font-black italic uppercase truncate">---</h3>
+                </div>
             </div>
-            <div id="answer-panel" class="hidden mb-6 bg-yellow-400 p-8 rounded-[3rem] text-black shadow-2xl animate-bounce">
+            <div id="answer-panel" class="hidden mb-6 bg-yellow-400 p-8 rounded-[3rem] text-black shadow-2xl">
                 <p id="rival-q" class="text-md font-black italic mb-6 text-center">"..."</p>
                 <div class="flex gap-3">
                     <button onclick="window.sendAnswerAction('SÍ')" class="flex-grow bg-black text-white py-4 rounded-2xl font-black uppercase text-xs">SÍ</button>
@@ -154,109 +175,73 @@
         </div>
     </div>
 
-    <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // CONFIGURACIÓN (Tus credenciales)
         const firebaseConfig = {
             apiKey: "AIzaSyBBe77umMs5vu5zq1Xr9YkJzH27a-sZdsc",
             authDomain: "quien-es-quien-8edf0.firebaseapp.com",
             projectId: "quien-es-quien-8edf0",
             storageBucket: "quien-es-quien-8edf0.firebasestorage.app",
             messagingSenderId: "798538692524",
-            appId: "1:798538692524:web:1b807793f38956c7a02c09",
-            measurementId: "G-6FZ9TK8V5G"
+            appId: "1:798538692524:web:1b807793f38956c7a02c09"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appIdPrefix = "pop-duel-multiverse-final";
+        const appIdPrefix = "pop-duel-multiverse-v10";
 
-        // BASE DE DATOS (20+ por categoría)
+        // BASE DE DATOS
         const DATABASE = [
-            // MARCAS
-            { id: "m1", name: "Coca-Cola", group: "marcas", img: "/assets/marcas/coca-cola.jpg" },
-            { id: "m2", name: "McDonald's", group: "marcas", img: "/assets/marcas/mcdonalds.jpg" },
-            { id: "m3", name: "Apple", group: "marcas", img: "/assets/marcas/apple.jpg" },
-            { id: "m4", name: "Nike", group: "marcas", img: "/assets/marcas/nike.jpg" },
-            { id: "m5", name: "Google", group: "marcas", img: "/assets/marcas/google.jpg" },
-            { id: "m6", name: "Ferrari", group: "marcas", img: "/assets/marcas/ferrari.jpg" },
-            { id: "m7", name: "Netflix", group: "marcas", img: "/assets/marcas/netflix.jpg" },
-            { id: "m8", name: "Amazon", group: "marcas", img: "/assets/marcas/amazon.jpg" },
-            { id: "m9", name: "Starbucks", group: "marcas", img: "/assets/marcas/starbucks.jpg" },
-            { id: "m10", name: "Disney", group: "marcas", img: "/assets/marcas/disney.jpg" },
-            { id: "m11", name: "Tesla", group: "marcas", img: "/assets/marcas/tesla.jpg" },
-            { id: "m12", name: "Spotify", group: "marcas", img: "/assets/marcas/spotify.jpg" },
-            { id: "m13", name: "Samsung", group: "marcas", img: "/assets/marcas/samsung.jpg" },
-            { id: "m14", name: "Instagram", group: "marcas", img: "/assets/marcas/instagram.jpg" },
-            { id: "m15", name: "Lego", group: "marcas", img: "/assets/marcas/lego.jpg" },
-            { id: "m16", name: "TikTok", group: "marcas", img: "/assets/marcas/tiktok.jpg" },
-            { id: "m17", name: "Puma", group: "marcas", img: "/assets/marcas/puma.jpg" },
-            { id: "m18", name: "Nintendo", group: "marcas", img: "/assets/marcas/nintendo.jpg" },
-            { id: "m19", name: "Sony", group: "marcas", img: "/assets/marcas/sony.jpg" },
-            { id: "m20", name: "Pepsi", group: "marcas", img: "/assets/marcas/pepsi.jpg" },
-            
-            // FAMOSOS
-            { id: "f1", name: "Messi", group: "famosos", img: "/assets/famosos/messi.jpg" },
-            { id: "f2", name: "CR7", group: "famosos", img: "/assets/famosos/cr7.jpg" },
-            { id: "f3", name: "Taylor Swift", group: "famosos", img: "/assets/famosos/taylor.jpg" },
-            { id: "f4", name: "Elon Musk", group: "famosos", img: "/assets/famosos/musk.jpg" },
-            { id: "f5", name: "Zendaya", group: "famosos", img: "/assets/famosos/zendaya.jpg" },
-            { id: "f6", name: "Shakira", group: "famosos", img: "/assets/famosos/shakira.jpg" },
-            { id: "f7", name: "Brad Pitt", group: "famosos", img: "/assets/famosos/pitt.jpg" },
-            { id: "f8", name: "Will Smith", group: "famosos", img: "/assets/famosos/smith.jpg" },
-            { id: "f9", name: "Rihanna", group: "famosos", img: "/assets/famosos/rihanna.jpg" },
-            { id: "f10", name: "The Rock", group: "famosos", img: "/assets/famosos/rock.jpg" },
-            { id: "f11", name: "Beyoncé", group: "famosos", img: "/assets/famosos/beyonce.jpg" },
-            { id: "f12", name: "LeBron James", group: "famosos", img: "/assets/famosos/lebron.jpg" },
-            { id: "f13", name: "Mark Zuckerberg", group: "famosos", img: "/assets/famosos/zuck.jpg" },
-            { id: "f14", name: "Billie Eilish", group: "famosos", img: "/assets/famosos/billie.jpg" },
-            { id: "f15", name: "Bad Bunny", group: "famosos", img: "/assets/famosos/badbunny.jpg" },
-            { id: "f16", name: "Justin Bieber", group: "famosos", img: "/assets/famosos/bieber.jpg" },
-            { id: "f17", name: "Rosalía", group: "famosos", img: "/assets/famosos/rosalia.jpg" },
-            { id: "f18", name: "Margot Robbie", group: "famosos", img: "/assets/famosos/margot.jpg" },
-            { id: "f19", name: "Michael Jordan", group: "famosos", img: "/assets/famosos/jordan.jpg" },
-            { id: "f20", name: "Dicaprio", group: "famosos", img: "/assets/famosos/dicaprio.jpg" },
-
-            // FICCIÓN (CARTOONS + HARRY POTTER)
-            { id: "c1", name: "Mordecai", group: "ficcion", img: "/assets/ficcion/mordecai.jpg" },
-            { id: "c2", name: "Rigby", group: "ficcion", img: "/assets/ficcion/rigby.jpg" },
-            { id: "c3", name: "Finn", group: "ficcion", img: "/assets/ficcion/finn.jpg" },
-            { id: "c4", name: "Jake", group: "ficcion", img: "/assets/ficcion/jake.jpg" },
-            { id: "c5", name: "Dipper", group: "ficcion", img: "/assets/ficcion/dipper.jpg" },
-            { id: "c6", name: "Mabel", group: "ficcion", img: "/assets/ficcion/mabel.jpg" },
-            { id: "c7", name: "Harry Potter", group: "ficcion", img: "/assets/ficcion/harry.jpg" },
-            { id: "c8", name: "Hermione", group: "ficcion", img: "/assets/ficcion/hermione.jpg" },
-            { id: "c9", name: "Voldemort", group: "ficcion", img: "/assets/ficcion/voldemort.jpg" },
-            { id: "c10", name: "Luz Noceda", group: "ficcion", img: "/assets/ficcion/luz.jpg" },
-            { id: "c11", name: "Eda", group: "ficcion", img: "/assets/ficcion/eda.jpg" },
-            { id: "c12", name: "Anne", group: "ficcion", img: "/assets/ficcion/anne.jpg" },
-            { id: "c13", name: "Gumball", group: "ficcion", img: "/assets/ficcion/gumball.jpg" },
-            { id: "c14", name: "Ben 10", group: "ficcion", img: "/assets/ficcion/ben10.jpg" },
-            { id: "c15", name: "Homer Simpson", group: "ficcion", img: "/assets/ficcion/homer.jpg" },
-            { id: "c16", name: "Spider-Man", group: "ficcion", img: "/assets/ficcion/spiderman.jpg" },
-            { id: "c17", name: "Bombón", group: "ficcion", img: "/assets/ficcion/bombon.jpg" },
-            { id: "c18", name: "Burbuja", group: "ficcion", img: "/assets/ficcion/burbuja.jpg" },
-            { id: "c19", name: "Bellota", group: "ficcion", img: "/assets/ficcion/bellota.jpg" },
-            { id: "c20", name: "Batman", group: "ficcion", img: "/assets/ficcion/batman.jpg" },
-            { id: "c21", name: "Bill Cipher", group: "ficcion", img: "/assets/ficcion/bill.jpg" },
-            { id: "c22", name: "Marceline", group: "ficcion", img: "/assets/ficcion/marceline.jpg" }
+            { id: "m1", name: "Coca-Cola", group: "marcas", img: "🥤" },
+            { id: "m2", name: "McDonald's", group: "marcas", img: "🍔" },
+            { id: "m3", name: "Apple", group: "marcas", img: "🍎" },
+            { id: "m4", name: "Nike", group: "marcas", img: "👟" },
+            { id: "m5", name: "Google", group: "marcas", img: "🔍" },
+            { id: "f1", name: "Messi", group: "famosos", img: "⚽" },
+            { id: "f2", name: "Elon Musk", group: "famosos", img: "🚀" },
+            { id: "f3", name: "Taylor Swift", group: "famosos", img: "🎙️" },
+            { id: "c1", name: "Spider-Man", group: "ficcion", img: "🕷️" },
+            { id: "c2", name: "Batman", group: "ficcion", img: "🦇" },
+            { id: "c3", name: "Harry Potter", group: "ficcion", img: "🪄" },
+            { id: "c4", name: "Pikachu", group: "ficcion", img: "⚡" }
         ];
 
         let currentUser = null;
+        let myNickname = "";
         let roomCode = "";
         let roomData = null;
 
         window.onload = async () => {
             lucide.createIcons();
             initCategoryButtons();
-            const userCred = await signInAnonymously(auth);
-            currentUser = userCred.user;
+            
+            // Auth Handling
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth));
+                } else { await signInAnonymously(auth); }
+            } catch (e) { await signInAnonymously(auth); }
+
+            onAuthStateChanged(auth, (u) => {
+                if (u) {
+                    currentUser = u;
+                    window.navTo('screen-auth'); // Primero pedir Nickname
+                    document.getElementById('screen-loading').classList.add('hidden');
+                }
+            });
+        };
+
+        window.saveNickname = () => {
+            const val = document.getElementById('nickname-input').value.trim();
+            if(val.length < 2) return;
+            myNickname = val;
+            document.getElementById('welcome-user').innerText = `Bienvenido, ${myNickname}`;
             window.navTo('screen-home');
-            document.getElementById('screen-loading').classList.add('hidden');
         };
 
         window.navTo = (id) => {
@@ -268,10 +253,11 @@
             const grid = document.getElementById('cat-grid');
             const cats = [
                 {id:'variado', n:'Variado', d:'Todo mezclado'},
-                {id:'marcas', n:'Marcas', d:'Logos mundiales'},
-                {id:'famosos', n:'Famosos', d:'Estrellas reales'},
-                {id:'ficcion', n:'Ficción', d:'Cartoons y Magia'}
+                {id:'marcas', n:'Logos', d:'Marcas mundiales'},
+                {id:'famosos', n:'Estrellas', d:'Gente real'},
+                {id:'ficcion', n:'Ficción', d:'Cartoons y Cine'}
             ];
+            grid.innerHTML = "";
             cats.forEach(c => {
                 const b = document.createElement('button');
                 b.className = "bg-slate-900 border-2 border-slate-800 p-8 rounded-[2rem] hover:border-indigo-500 transition-all text-center group active:scale-95";
@@ -284,34 +270,60 @@
         window.createRoomAction = async (cat) => {
             roomCode = Math.floor(100000 + Math.random() * 900000).toString();
             const pool = cat === 'variado' ? DATABASE : DATABASE.filter(e => e.group === cat);
-            const entities = pool.sort(() => 0.5 - Math.random()).slice(0, 20);
+            const entities = pool.sort(() => 0.5 - Math.random()).slice(0, 12);
 
             const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', roomCode);
             await setDoc(roomRef, {
-                code: roomCode, player1: currentUser.uid, player2: null, entities, 
-                p1_secret: null, p2_secret: null, turn: currentUser.uid, 
-                lastQuestion: null, lastAnswer: null, winner: null
+                code: roomCode, 
+                player1: currentUser.uid, 
+                p1_name: myNickname,
+                player2: null, 
+                p2_name: null,
+                entities, 
+                p1_secret: null, 
+                p2_secret: null, 
+                turn: currentUser.uid, 
+                lastQuestion: null, 
+                lastAnswer: null, 
+                winner: null
             });
+            
             document.getElementById('room-code-text').innerText = roomCode;
+            document.getElementById('lobby-p1-name').innerText = myNickname;
             window.navTo('screen-lobby');
             listenToRoom(roomCode);
         };
 
-        window.autoJoinCheck = (val) => {
-            if(val.length === 6) window.handleJoin(val);
-        };
+        window.autoJoinCheck = (val) => { if(val.length === 6) window.handleJoin(val); };
 
         window.handleJoin = async (code) => {
+            const loader = document.getElementById('join-loading');
+            const error = document.getElementById('join-error');
+            loader.classList.remove('hidden');
+            error.classList.add('hidden');
+
             const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', code);
             const snap = await getDoc(roomRef);
+            
             if(snap.exists()) {
                 const data = snap.data();
                 if(!data.player2 || data.player2 === currentUser.uid) {
-                    await updateDoc(roomRef, { player2: currentUser.uid });
+                    await updateDoc(roomRef, { 
+                        player2: currentUser.uid,
+                        p2_name: myNickname 
+                    });
                     roomCode = code;
                     listenToRoom(code);
-                } else { document.getElementById('join-error').classList.remove('hidden'); }
-            } else { document.getElementById('join-error').classList.remove('hidden'); }
+                    window.navTo('screen-lobby'); // El que se une también va al lobby primero
+                } else { 
+                    error.innerText = "Sala Llena";
+                    error.classList.remove('hidden'); 
+                }
+            } else { 
+                error.innerText = "Código Incorrecto";
+                error.classList.remove('hidden'); 
+            }
+            loader.classList.add('hidden');
         };
 
         function listenToRoom(code) {
@@ -321,51 +333,52 @@
                 const data = snap.data();
                 roomData = data;
                 
-                // Actualizar Lobby
+                const isP1 = currentUser.uid === data.player1;
+                
+                // Actualizar UI del Lobby con nombres reales
+                document.getElementById('lobby-p1-name').innerText = isP1 ? `${data.p1_name} (Tú)` : data.p1_name;
+                
                 if(data.player2) {
                     const rivalSlot = document.getElementById('lobby-rival-slot');
-                    rivalSlot.className = "p-8 bg-slate-950 rounded-[3rem] border-2 border-indigo-500 flex flex-col items-center scale-105";
-                    document.getElementById('rival-icon-bg').className = "w-20 h-20 bg-emerald-500 rounded-3xl flex items-center justify-center mb-4 pulse-indigo";
-                    document.getElementById('rival-icon').className = "text-white w-10 h-10";
-                    document.getElementById('rival-name-display').innerText = "Rival Conectado";
-                    document.getElementById('rival-name-display').className = "font-bold text-white italic";
+                    rivalSlot.className = "p-8 bg-slate-950 rounded-[3rem] border-2 border-indigo-500 flex flex-col items-center scale-105 shadow-2xl";
+                    document.getElementById('rival-icon-bg').className = "w-20 h-20 bg-emerald-500 rounded-3xl flex items-center justify-center mb-4 pulse-indigo text-white";
+                    document.getElementById('rival-name-display').innerText = isP1 ? data.p2_name : `${data.p2_name} (Tú)`;
+                    document.getElementById('rival-name-display').className = "font-bold text-white italic truncate w-full";
+                    document.getElementById('rival-role-label').innerText = "Rival Conectado";
+                    document.getElementById('rival-role-label').className = "text-[10px] font-black uppercase text-emerald-400";
                     lucide.createIcons();
                 }
 
-                // Control Pantallas
-                const myId = currentUser.uid;
-                const mySecret = myId === data.player1 ? data.p1_secret : data.p2_secret;
+                // Navegación de Flujo
+                const mySecret = isP1 ? data.p1_secret : data.p2_secret;
 
                 if(data.winner) {
-                    showResult(data.winner === myId);
+                    showResult(data.winner === currentUser.uid);
                 } else if(data.p1_secret && data.p2_secret) {
                     renderGame(data);
                     window.navTo('screen-game');
                 } else if(data.player2) {
-                    setTimeout(() => {
-                        if(!mySecret) {
-                            renderPicking(data.entities);
-                            window.navTo('screen-picking');
-                        }
-                    }, 1000);
+                    // Si ya hay rival, pasar a picking si no he elegido
+                    if(!mySecret) {
+                        renderPicking(data.entities);
+                        window.navTo('screen-picking');
+                    } else {
+                        document.getElementById('pick-waiting-overlay').classList.remove('hidden');
+                    }
                 }
             });
         }
 
         function renderPicking(entities) {
             const grid = document.getElementById('pick-grid');
-            const myId = currentUser.uid;
-            const picked = myId === roomData.player1 ? roomData.p1_secret : roomData.p2_secret;
-            if(picked) { document.getElementById('pick-waiting-overlay').classList.remove('hidden'); return; }
-
             grid.innerHTML = "";
             entities.forEach(item => {
                 const b = document.createElement('button');
-                b.className = "group relative h-48 rounded-3xl overflow-hidden border-4 border-white bg-white shadow-lg active:scale-90 transition-all";
-                b.innerHTML = `<img src="${item.img}" class="w-full h-full object-cover"><div class="absolute inset-x-0 bottom-0 bg-black/70 p-2 text-[9px] font-black text-white uppercase">${item.name}</div>`;
+                b.className = "bg-white rounded-3xl p-6 shadow-lg flex flex-col items-center justify-center border-4 border-white active:scale-95 transition-all text-slate-800";
+                b.innerHTML = `<span class="text-4xl mb-2">${item.img}</span><span class="text-[9px] font-black uppercase text-center">${item.name}</span>`;
                 b.onclick = async () => {
                     const roomRef = doc(db, 'artifacts', appIdPrefix, 'public', 'data', 'rooms', roomCode);
-                    const field = myId === roomData.player1 ? 'p1_secret' : 'p2_secret';
+                    const field = currentUser.uid === roomData.player1 ? 'p1_secret' : 'p2_secret';
                     await updateDoc(roomRef, { [field]: item.id });
                 };
                 grid.appendChild(b);
@@ -373,14 +386,13 @@
         }
 
         function renderGame(data) {
-            const myId = currentUser.uid;
-            const isMyTurn = data.turn === myId;
-            const mySecretId = myId === data.player1 ? data.p1_secret : data.p2_secret;
+            const isMyTurn = data.turn === currentUser.uid;
+            const mySecretId = currentUser.uid === data.player1 ? data.p1_secret : data.p2_secret;
             const secret = data.entities.find(e => e.id === mySecretId);
 
-            document.getElementById('turn-dot').className = isMyTurn ? "w-3 h-3 rounded-full bg-green-500 animate-ping" : "w-3 h-3 rounded-full bg-slate-300";
+            document.getElementById('turn-dot').className = isMyTurn ? "w-3 h-3 rounded-full bg-emerald-500 animate-ping" : "w-3 h-3 rounded-full bg-slate-300";
             document.getElementById('turn-label').innerText = isMyTurn ? "Tu Turno" : "Turno Rival";
-            document.getElementById('identity-img').src = secret.img;
+            document.getElementById('identity-img').innerText = secret.img; // Como estamos en Test con Emojis
             document.getElementById('identity-name').innerText = secret.name;
 
             const box = document.getElementById('answer-panel');
@@ -393,8 +405,8 @@
             if(grid.children.length === 0) {
                 data.entities.forEach(item => {
                     const card = document.createElement('div');
-                    card.className = "card-anim relative h-48 bg-white rounded-2xl shadow-md border-4 border-white cursor-pointer overflow-hidden active:scale-95";
-                    card.innerHTML = `<img src="${item.img}" class="w-full h-full object-cover"><div class="absolute inset-x-0 bottom-0 bg-white/95 p-2 text-center text-[9px] font-black uppercase text-slate-800">${item.name}</div>`;
+                    card.className = "card-anim relative h-32 bg-white rounded-2xl shadow-sm flex flex-col items-center justify-center cursor-pointer border-2 border-white";
+                    card.innerHTML = `<span class="text-3xl">${item.img}</span><span class="text-[8px] font-black uppercase mt-1">${item.name}</span>`;
                     card.onclick = () => card.classList.toggle('flipped');
                     grid.appendChild(card);
                 });
@@ -408,8 +420,8 @@
                 if(!hist.firstChild || hist.firstChild.dataset.q !== data.lastQuestion) {
                     const d = document.createElement('div');
                     d.dataset.q = data.lastQuestion;
-                    d.className = "p-4 rounded-[2rem] bg-white border-2 border-slate-100 shadow-sm";
-                    d.innerHTML = `<p class="text-[11px] font-bold text-slate-800 leading-tight">"${data.lastQuestion}"</p><div class="flex justify-between items-center mt-2 pt-2 border-t"><span class="text-[8px] font-black uppercase text-slate-400">Respuesta</span><span class="text-[10px] font-black ${data.lastAnswer==='SÍ'?'text-green-600':'text-red-600'}">${data.lastAnswer}</span></div>`;
+                    d.className = "p-4 rounded-2xl bg-white border border-slate-200 shadow-sm";
+                    d.innerHTML = `<p class="text-[11px] font-bold text-slate-800">"${data.lastQuestion}"</p><p class="mt-1 text-indigo-600 font-black uppercase text-[9px]">${data.lastAnswer}</p>`;
                     hist.prepend(d);
                 }
             }
@@ -441,7 +453,7 @@
             window.navTo('screen-result');
             const box = document.getElementById('result-box');
             document.getElementById('result-text').innerText = win ? "¡VICTORIA!" : "¡DERROTA!";
-            box.className = `p-12 rounded-[5rem] text-center text-white shadow-2xl border-8 max-w-md w-full ${win?'bg-green-600 border-green-400':'bg-red-600 border-red-400'}`;
+            box.className = `p-12 rounded-[5rem] text-center text-white shadow-2xl border-8 max-w-md w-full ${win?'bg-emerald-600 border-emerald-400':'bg-red-600 border-red-400'}`;
         }
 
         window.copyRoomCode = () => {
@@ -449,8 +461,8 @@
             el.value = roomCode; document.body.appendChild(el);
             el.select(); document.execCommand('copy');
             document.body.removeChild(el);
-            alert("Código de sala copiado!");
         };
     </script>
 </body>
 </html>
+
