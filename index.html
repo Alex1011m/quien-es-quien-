@@ -29,7 +29,6 @@
         .heart-active { color: #ef4444; fill: #ef4444; }
         .heart-lost { color: #334155; fill: transparent; }
 
-        /* Estilo para las imágenes de personajes */
         .char-img {
             width: 100%;
             height: 100%;
@@ -247,14 +246,24 @@
         import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- CONFIGURACIÓN DE GITHUB ---
-        // Cambia esto por tu usuario y repo. Ejemplo: 'https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/imagenes/'
         const GITHUB_IMG_BASE = ""; 
 
-        const firebaseConfig = JSON.parse(__firebase_config);
+        // --- CONFIGURACIÓN DE FIREBASE DIRECTA ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBe77umMs5vu5zq1Xr9YkJzH27a-sZdsc",
+            authDomain: "quien-es-quien-8edf0.firebaseapp.com",
+            projectId: "quien-es-quien-8edf0",
+            storageBucket: "quien-es-quien-8edf0.firebasestorage.app",
+            messagingSenderId: "798538692524",
+            appId: "1:798538692524:web:1b807793f38956c7a02c09"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'pop-duel-master-v2';
+        
+        // ID de la aplicación para separar datos en Firestore
+        const appId = "pop-duel-master-v2";
 
         const DATABASE = [
             // FICCIÓN (60)
@@ -273,7 +282,6 @@
         let roomData = null;
         let sidebarOpen = false;
 
-        // Función Helper para obtener HTML del Personaje (Imagen o Emoji)
         function getCharacterHTML(item, sizeClass = "text-4xl") {
             const imgUrl = GITHUB_IMG_BASE ? `${GITHUB_IMG_BASE}${item.id}.png` : "";
             if (imgUrl) {
@@ -287,10 +295,11 @@
             lucide.createIcons();
             initCategories();
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth));
-                } else { await signInAnonymously(auth); }
-            } catch (e) { await signInAnonymously(auth); }
+                // Autenticación anónima directa
+                await signInAnonymously(auth);
+            } catch (e) { 
+                console.error("Auth Fallback Error:", e);
+            }
 
             onAuthStateChanged(auth, (u) => {
                 if (u) {
@@ -479,7 +488,6 @@
             document.getElementById('turn-dot').className = isMyTurn ? "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" : "w-2.5 h-2.5 rounded-full bg-slate-300";
             document.getElementById('turn-label').innerText = isMyTurn ? "TU TURNO" : "TURNO RIVAL";
             
-            // Actualizar mi identidad secreta en el sidebar
             const myIdBox = document.getElementById('my-identity-img-box');
             myIdBox.innerHTML = getCharacterHTML(sec, "text-4xl");
             document.getElementById('my-identity-name').innerText = sec.n;
